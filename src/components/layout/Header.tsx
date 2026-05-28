@@ -3,7 +3,7 @@ export function Header() {
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+          <p className="text-xs font-semibold text-emerald-700">
             Life Tracker
           </p>
           <h1 className="text-lg font-semibold text-slate-950">
