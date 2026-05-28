@@ -1,8 +1,4 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
-
-type WeightLog = {
+export type WeightLog = {
   id: number;
   date: string;
   weightKg: number;
@@ -10,7 +6,9 @@ type WeightLog = {
 };
 
 type WeightStatsProps = {
-  refreshKey: number;
+  logs: WeightLog[];
+  isLoading: boolean;
+  error: string;
 };
 
 function formatDate(date: string) {
@@ -21,48 +19,16 @@ function formatDate(date: string) {
   }).format(new Date(`${date}T00:00:00`));
 }
 
-export function WeightStats({ refreshKey }: WeightStatsProps) {
-  const [logs, setLogs] = useState<WeightLog[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    async function fetchLogs() {
-      setIsLoading(true);
-      setError("");
-
-      try {
-        const response = await fetch("/api/weight-logs");
-
-        if (!response.ok) {
-          throw new Error("体重記録の取得に失敗しました。");
-        }
-
-        const data = (await response.json()) as WeightLog[];
-        setLogs(data);
-      } catch (fetchError) {
-        setError(
-          fetchError instanceof Error
-            ? fetchError.message
-            : "体重記録の取得に失敗しました。",
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchLogs();
-  }, [refreshKey]);
-
+export function WeightStats({ logs, isLoading, error }: WeightStatsProps) {
   const latestLog = logs[0];
   const previousLog = logs[1];
-  const diff = useMemo(() => {
+  const diff = (() => {
     if (!latestLog || !previousLog) {
       return null;
     }
 
     return latestLog.weightKg - previousLog.weightKg;
-  }, [latestLog, previousLog]);
+  })();
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
