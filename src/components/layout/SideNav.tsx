@@ -13,7 +13,7 @@ export function SideNav() {
     <aside className="border-b border-slate-200 bg-slate-950 text-white lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r">
       <div className="flex h-full flex-col">
         <div className="hidden px-6 py-6 lg:block">
-          <p className="text-sm font-semibold text-emerald-300">Life Stack</p>
+          <p className="text-sm font-semibold text-emerald-300">Life Tracker</p>
           <p className="mt-1 text-xs text-slate-400">schedule / body / meals</p>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-col lg:gap-2 lg:px-4 lg:py-0">
