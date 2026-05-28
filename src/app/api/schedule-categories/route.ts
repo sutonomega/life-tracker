@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
 
 const defaultCategories = [
@@ -9,6 +10,8 @@ const defaultCategories = [
 ];
 
 export async function GET() {
+  await ensureDatabase();
+
   const count = await prisma.scheduleCategory.count();
 
   if (count === 0) {
