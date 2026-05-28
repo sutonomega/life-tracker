@@ -1,4 +1,4 @@
-import { ScheduleForm } from "../../components/schedule/ScheduleForm";
+import { ScheduleDashboard } from "../../components/schedule/ScheduleDashboard";
 
 export default function SchedulePage() {
   return (
@@ -13,7 +13,7 @@ export default function SchedulePage() {
         </p>
       </section>
 
-      <ScheduleForm />
+      <ScheduleDashboard />
     </div>
   );
 }

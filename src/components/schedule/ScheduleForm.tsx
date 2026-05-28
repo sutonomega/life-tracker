@@ -26,7 +26,11 @@ const initialFormState: FormState = {
   memo: "",
 };
 
-export function ScheduleForm() {
+type ScheduleFormProps = {
+  onCreated?: (date: string) => void;
+};
+
+export function ScheduleForm({ onCreated }: ScheduleFormProps) {
   const [form, setForm] = useState<FormState>(initialFormState);
   const [categories, setCategories] = useState<ScheduleCategory[]>([]);
   const [message, setMessage] = useState("");
@@ -113,6 +117,7 @@ export function ScheduleForm() {
         date: current.date,
         categoryId: current.categoryId,
       }));
+      onCreated?.(form.date);
     } catch (submitError) {
       setError(
         submitError instanceof Error
