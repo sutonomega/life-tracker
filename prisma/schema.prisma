@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model WeightLog {
+  id        Int      @id @default(autoincrement())
+  date      String   @unique
+  weightKg  Float
+  memo      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("weight_logs")
+}
+
+model Meal {
+  id         Int      @id @default(autoincrement())
+  date       String
+  mealType   String
+  foodName   String
+  calories   Int
+  proteinG   Float
+  fatG       Float
+  carbsG     Float
+  memo       String?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([date])
+
+  @@map("meals")
+}
+
+model Schedule {
+  id         Int      @id @default(autoincrement())
+  date       String
+  title      String
+  startTime  String
+  endTime    String
+  memo       String?
+  categoryId Int
+
+  category   ScheduleCategory @relation(fields: [categoryId], references: [id])
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([date])
+
+  @@map("schedules")
+}
+
+model NutritionGoal {
+  id        Int      @id @default(autoincrement())
+  calories  Int
+  proteinG  Float
+  fatG      Float
+  carbsG    Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("nutrition_goals")
+}
+
+model ScheduleCategory {
+  id    Int    @id @default(autoincrement())
+  name  String
+  color String
+
+  schedules Schedule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("schedule_categories")
+}
