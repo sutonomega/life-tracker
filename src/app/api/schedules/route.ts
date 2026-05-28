@@ -18,8 +18,18 @@ function isValidTime(value: string) {
   return /^\d{2}:\d{2}$/.test(value);
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const date = request.nextUrl.searchParams.get("date")?.trim();
+
+  if (date && !isValidDate(date)) {
+    return NextResponse.json(
+      { message: "日付の形式が正しくありません。" },
+      { status: 400 },
+    );
+  }
+
   const schedules = await prisma.schedule.findMany({
+    where: date ? { date } : undefined,
     include: { category: true },
     orderBy: [{ date: "asc" }, { startTime: "asc" }],
   });
