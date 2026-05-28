@@ -1,0 +1,7 @@
+export default function WeightPage() {
+  return (
+    <section>
+      <h2 className="text-2xl font-semibold text-slate-950">体重</h2>
+    </section>
+  );
+}
