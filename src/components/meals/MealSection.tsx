@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Meal, MealForm } from "./MealForm";
+import { MealCopyPanel } from "./MealCopyPanel";
 import { MealItem } from "./MealItem";
+import { MealTemplatePanel } from "./MealTemplatePanel";
 import { NutritionGoal, NutritionSummary } from "./NutritionSummary";
 
 function getToday() {
@@ -11,6 +13,7 @@ function getToday() {
 
 export function MealSection() {
   const [selectedDate, setSelectedDate] = useState(getToday);
+  const [activeTab, setActiveTab] = useState<"form" | "copy" | "template">("form");
   const [refreshKey, setRefreshKey] = useState(0);
   const [meals, setMeals] = useState<Meal[]>([]);
   const [goal, setGoal] = useState<NutritionGoal | null>(null);
@@ -66,7 +69,46 @@ export function MealSection() {
               className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
             />
           </label>
-          <MealForm selectedDate={selectedDate} onCreated={refreshMeals} />
+          <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+            <div className="grid grid-cols-3 gap-1">
+              {[
+                ["form", "登録"],
+                ["copy", "コピー"],
+                ["template", "テンプレート"],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setActiveTab(value as typeof activeTab)}
+                  className={`h-10 rounded-md px-2 text-sm font-semibold transition ${
+                    activeTab === value
+                      ? "bg-slate-950 text-white"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {activeTab === "form" ? (
+            <MealForm selectedDate={selectedDate} onCreated={refreshMeals} />
+          ) : null}
+          {activeTab === "copy" ? (
+            <MealCopyPanel
+              selectedDate={selectedDate}
+              targetMealCount={meals.length}
+              onCopied={refreshMeals}
+            />
+          ) : null}
+          {activeTab === "template" ? (
+            <MealTemplatePanel
+              selectedDate={selectedDate}
+              meals={meals}
+              onCreated={refreshMeals}
+            />
+          ) : null}
         </div>
 
         <div className="space-y-6">

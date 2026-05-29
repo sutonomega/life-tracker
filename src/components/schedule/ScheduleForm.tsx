@@ -136,7 +136,7 @@ export function ScheduleForm({ onCreated }: ScheduleFormProps) {
     >
       <div className="flex flex-col gap-1">
         <h3 className="text-lg font-semibold text-slate-950">
-          スケジュール登録
+          登録
         </h3>
         <p className="text-sm text-slate-500">
           日付と時間を指定して予定を登録します。
