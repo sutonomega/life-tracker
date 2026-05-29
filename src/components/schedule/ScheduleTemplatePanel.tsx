@@ -25,6 +25,15 @@ type ScheduleTemplatePanelProps = {
   onApplied: (date: string) => void;
 };
 
+async function readResponseMessage(response: Response, fallbackMessage: string) {
+  try {
+    const data = (await response.json()) as { message?: string };
+    return data.message ?? fallbackMessage;
+  } catch {
+    return fallbackMessage;
+  }
+}
+
 export function ScheduleTemplatePanel({
   selectedDate,
   onApplied,
@@ -138,11 +147,14 @@ export function ScheduleTemplatePanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: templateName, sourceDate: selectedDate }),
       });
-      const data = (await response.json()) as ScheduleTemplate & { message?: string };
 
       if (!response.ok) {
-        throw new Error(data.message ?? "テンプレート作成に失敗しました。");
+        throw new Error(
+          await readResponseMessage(response, "テンプレート作成に失敗しました。"),
+        );
       }
+
+      const data = (await response.json()) as ScheduleTemplate;
 
       setTemplateName("");
       setSelectedTemplateId(String(data.id));
@@ -178,10 +190,11 @@ export function ScheduleTemplatePanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
       });
-      const data = (await response.json()) as { message?: string };
 
       if (!response.ok) {
-        throw new Error(data.message ?? "テンプレート更新に失敗しました。");
+        throw new Error(
+          await readResponseMessage(response, "テンプレート更新に失敗しました。"),
+        );
       }
 
       setMessage("テンプレート名を更新しました。");
@@ -206,10 +219,11 @@ export function ScheduleTemplatePanel({
       const response = await fetch(`/api/schedule-templates/${templateId}`, {
         method: "DELETE",
       });
-      const data = (await response.json()) as { message?: string };
 
       if (!response.ok) {
-        throw new Error(data.message ?? "テンプレート削除に失敗しました。");
+        throw new Error(
+          await readResponseMessage(response, "テンプレート削除に失敗しました。"),
+        );
       }
 
       setMessage("テンプレートを削除しました。");
@@ -246,11 +260,14 @@ export function ScheduleTemplatePanel({
           body: JSON.stringify({ date: applyDate }),
         },
       );
-      const data = (await response.json()) as { count?: number; message?: string };
 
       if (!response.ok) {
-        throw new Error(data.message ?? "テンプレート適用に失敗しました。");
+        throw new Error(
+          await readResponseMessage(response, "テンプレート適用に失敗しました。"),
+        );
       }
+
+      const data = (await response.json()) as { count?: number };
 
       setMessage(`${data.count ?? 0}件の予定を登録しました。`);
       setApplyDateScheduleCount(data.count ?? 0);

@@ -38,6 +38,23 @@ model Meal {
   @@map("meals")
 }
 
+model MealTemplate {
+  id        Int    @id @default(autoincrement())
+  name      String
+  mealType  String
+  foodName  String
+  calories  Int
+  proteinG  Float
+  fatG      Float
+  carbsG    Float
+  memo      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("meal_templates")
+}
+
 model Schedule {
   id         Int      @id @default(autoincrement())
   date       String
