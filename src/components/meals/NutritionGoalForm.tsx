@@ -128,16 +128,16 @@ export function NutritionGoalForm() {
       {!isLoading ? (
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           {[
-            ["calories", "kcal", "1"],
-            ["proteinG", "P g", "0.1"],
-            ["fatG", "F g", "0.1"],
-            ["carbsG", "C g", "0.1"],
-          ].map(([field, label, step]) => (
+            ["calories", "kcal", "1", "1"],
+            ["proteinG", "P g", "any", "0.1"],
+            ["fatG", "F g", "any", "0.1"],
+            ["carbsG", "C g", "any", "0.1"],
+          ].map(([field, label, step, min]) => (
             <label key={field} className="block">
               <span className="text-sm font-medium text-slate-700">{label}</span>
               <input
                 type="number"
-                min="0.1"
+                min={min}
                 step={step}
                 value={form[field as keyof FormState]}
                 onChange={(event) =>
