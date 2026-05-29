@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
+import { parseJsonBody } from "../../../lib/request";
 
 type WeightLogRequestBody = {
   date?: string;
@@ -25,7 +26,14 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   await ensureDatabase();
 
-  const body = (await request.json()) as WeightLogRequestBody;
+  const body = await parseJsonBody<WeightLogRequestBody>(request);
+
+  if (!body) {
+    return NextResponse.json(
+      { message: "リクエスト本文が正しくありません。" },
+      { status: 400 },
+    );
+  }
 
   const date = body.date?.trim() ?? "";
   const weightKg = Number(body.weightKg);

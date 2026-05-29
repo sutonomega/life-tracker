@@ -47,7 +47,12 @@ export function WeightDashboard() {
     <div className="space-y-6">
       <div className="grid gap-6 xl:grid-cols-[minmax(320px,400px)_1fr]">
         <WeightForm onCreated={refreshLogs} />
-        <WeightStats logs={logs} isLoading={isLoading} error={error} />
+        <WeightStats
+          logs={logs}
+          isLoading={isLoading}
+          error={error}
+          onChanged={refreshLogs}
+        />
       </div>
       <WeightChart logs={logs} isLoading={isLoading} error={error} />
     </div>

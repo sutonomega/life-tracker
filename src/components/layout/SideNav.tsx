@@ -21,7 +21,7 @@ export function SideNav() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex min-w-fit items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
+              className="flex min-w-fit shrink-0 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
             >
               <span
                 aria-hidden="true"

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
+import { parseJsonBody } from "../../../lib/request";
 
 type ScheduleRequestBody = {
   date?: string;
@@ -43,7 +44,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   await ensureDatabase();
 
-  const body = (await request.json()) as ScheduleRequestBody;
+  const body = await parseJsonBody<ScheduleRequestBody>(request);
+
+  if (!body) {
+    return NextResponse.json(
+      { message: "リクエスト本文が正しくありません。" },
+      { status: 400 },
+    );
+  }
 
   const date = body.date?.trim() ?? "";
   const title = body.title?.trim() ?? "";

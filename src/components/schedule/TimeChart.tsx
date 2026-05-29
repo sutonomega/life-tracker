@@ -1,20 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ScheduleBlock } from "./ScheduleBlock";
-
-type Schedule = {
-  id: number;
-  date: string;
-  title: string;
-  startTime: string;
-  endTime: string;
-  memo: string | null;
-  category: {
-    name: string;
-    color: string;
-  };
-};
+import { Schedule, ScheduleBlock, ScheduleCategory } from "./ScheduleBlock";
 
 type TimeChartProps = {
   selectedDate: string;
@@ -31,8 +18,10 @@ function formatDateLabel(date: string) {
 
 export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [categories, setCategories] = useState<ScheduleCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [localRefreshKey, setLocalRefreshKey] = useState(0);
 
   useEffect(() => {
     async function fetchSchedules() {
@@ -41,14 +30,17 @@ export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
 
       try {
         const params = new URLSearchParams({ date: selectedDate });
-        const response = await fetch(`/api/schedules?${params.toString()}`);
+        const [schedulesResponse, categoriesResponse] = await Promise.all([
+          fetch(`/api/schedules?${params.toString()}`),
+          fetch("/api/schedule-categories"),
+        ]);
 
-        if (!response.ok) {
+        if (!schedulesResponse.ok || !categoriesResponse.ok) {
           throw new Error("スケジュールの取得に失敗しました。");
         }
 
-        const data = (await response.json()) as Schedule[];
-        setSchedules(data);
+        setSchedules((await schedulesResponse.json()) as Schedule[]);
+        setCategories((await categoriesResponse.json()) as ScheduleCategory[]);
       } catch (fetchError) {
         setError(
           fetchError instanceof Error
@@ -61,7 +53,7 @@ export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
     }
 
     fetchSchedules();
-  }, [refreshKey, selectedDate]);
+  }, [localRefreshKey, refreshKey, selectedDate]);
 
   const sortedSchedules = useMemo(() => {
     return [...schedules].sort((a, b) => {
@@ -118,11 +110,9 @@ export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
             {sortedSchedules.map((schedule) => (
               <ScheduleBlock
                 key={schedule.id}
-                title={schedule.title}
-                startTime={schedule.startTime}
-                endTime={schedule.endTime}
-                memo={schedule.memo}
-                category={schedule.category}
+                schedule={schedule}
+                categories={categories}
+                onChanged={() => setLocalRefreshKey((current) => current + 1)}
               />
             ))}
           </div>
