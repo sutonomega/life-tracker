@@ -34,6 +34,7 @@ export function ScheduleDashboard() {
         <ScheduleForm onCreated={refreshSchedules} />
         <ScheduleCopyPanel selectedDate={selectedDate} onCopied={refreshSchedules} />
         <ScheduleTemplatePanel
+          key={selectedDate}
           selectedDate={selectedDate}
           onApplied={refreshSchedules}
         />
