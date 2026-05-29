@@ -42,6 +42,14 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  return saveNutritionGoal(request);
+}
+
+export async function PUT(request: NextRequest) {
+  return saveNutritionGoal(request);
+}
+
+async function saveNutritionGoal(request: NextRequest) {
   await ensureDatabase();
 
   const body = await parseJsonBody<NutritionGoalRequestBody>(request);

@@ -91,7 +91,7 @@ export function NutritionGoalForm() {
 
     try {
       const response = await fetch("/api/nutrition-goals", {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ calories, proteinG, fatG, carbsG }),
       });
