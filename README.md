@@ -44,7 +44,13 @@ Prisma Client を生成します。`npm install`、`npm run dev`、`npm run buil
 npx prisma generate
 ```
 
-DB スキーマを反映します。
+ローカル開発DBへスキーマを反映します。
+
+```bash
+npx prisma migrate dev
+```
+
+本番DBへスキーマを反映します。
 
 ```bash
 npx prisma migrate deploy
@@ -79,4 +85,6 @@ npx prisma validate
 * 本番DBは Neon PostgreSQL を利用します。
 * Vercel には `DATABASE_URL` を環境変数として設定してください。
 * SQLite向けの自動テーブル作成処理は廃止し、Prisma migrationでスキーマを管理します。
-* ローカル開発では `.env` にPostgreSQL接続URLを設定し、`npx prisma migrate deploy` を実行してから利用してください。
+* ローカル開発では `.env` にPostgreSQL接続URLを設定し、`npx prisma migrate dev` を実行してから利用してください。
+* 本番では Vercel のデプロイ前後で `npx prisma migrate deploy` を実行してください。
+* SQLite時代のmigration履歴は `prisma/sqlite_migrations_archive` に退避しています。Neon PostgreSQL へ適用するmigrationは `prisma/migrations` のPostgreSQL baselineを使用します。
