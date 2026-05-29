@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody } from "../../../lib/request";
 
@@ -25,7 +24,6 @@ function isValidNonNegativeNumber(value: number) {
 }
 
 export async function GET(request: NextRequest) {
-  await ensureDatabase();
 
   const date = request.nextUrl.searchParams.get("date")?.trim();
 
@@ -45,7 +43,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  await ensureDatabase();
 
   const body = await parseJsonBody<MealRequestBody>(request);
 

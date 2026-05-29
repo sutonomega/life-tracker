@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { ensureDatabase } from "../../../../lib/database";
 import { prisma } from "../../../../lib/prisma";
 
 type RouteContext = {
@@ -13,7 +12,6 @@ async function getId(context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  await ensureDatabase();
 
   const id = await getId(context);
 

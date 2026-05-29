@@ -1,11 +1,13 @@
 -- CreateTable
 CREATE TABLE "weight_logs" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "date" TEXT NOT NULL,
-    "weightKg" REAL NOT NULL,
+    "weightKg" DOUBLE PRECISION NOT NULL,
     "memo" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "weight_logs_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

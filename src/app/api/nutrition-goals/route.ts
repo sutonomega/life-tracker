@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody } from "../../../lib/request";
 
@@ -40,7 +39,6 @@ async function getOrCreateGoal() {
 }
 
 export async function GET() {
-  await ensureDatabase();
   const goal = await getOrCreateGoal();
   return NextResponse.json(goal);
 }
@@ -54,7 +52,6 @@ export async function PUT(request: NextRequest) {
 }
 
 async function saveNutritionGoal(request: NextRequest) {
-  await ensureDatabase();
 
   const body = await parseJsonBody<NutritionGoalRequestBody>(request);
 

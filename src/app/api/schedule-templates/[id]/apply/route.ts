@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureDatabase } from "../../../../../lib/database";
 import { prisma } from "../../../../../lib/prisma";
 import { parseJsonBody } from "../../../../../lib/request";
 import { isValidDate } from "../../../../../lib/validation";
@@ -19,7 +18,6 @@ async function getId(context: RouteContext) {
 }
 
 export async function POST(request: NextRequest, context: RouteContext) {
-  await ensureDatabase();
 
   const id = await getId(context);
 

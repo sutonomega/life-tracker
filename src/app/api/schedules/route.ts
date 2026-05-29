@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody } from "../../../lib/request";
 
@@ -21,7 +20,6 @@ function isValidTime(value: string) {
 }
 
 export async function GET(request: NextRequest) {
-  await ensureDatabase();
 
   const date = request.nextUrl.searchParams.get("date")?.trim();
 
@@ -42,7 +40,6 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  await ensureDatabase();
 
   const body = await parseJsonBody<ScheduleRequestBody>(request);
 
