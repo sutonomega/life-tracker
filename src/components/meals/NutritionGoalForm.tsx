@@ -77,13 +77,13 @@ export function NutritionGoalForm() {
       !Number.isInteger(calories) ||
       calories <= 0 ||
       !Number.isFinite(proteinG) ||
-      proteinG <= 0 ||
+      proteinG < 0 ||
       !Number.isFinite(fatG) ||
-      fatG <= 0 ||
+      fatG < 0 ||
       !Number.isFinite(carbsG) ||
-      carbsG <= 0
+      carbsG < 0
     ) {
-      setError("目標値は0より大きい数値で入力してください。");
+      setError("カロリーは1以上、PFCは0以上の数値で入力してください。");
       return;
     }
 
@@ -129,9 +129,9 @@ export function NutritionGoalForm() {
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           {[
             ["calories", "kcal", "1", "1"],
-            ["proteinG", "P g", "any", "0.1"],
-            ["fatG", "F g", "any", "0.1"],
-            ["carbsG", "C g", "any", "0.1"],
+            ["proteinG", "P g", "any", "0"],
+            ["fatG", "F g", "any", "0"],
+            ["carbsG", "C g", "any", "0"],
           ].map(([field, label, step, min]) => (
             <label key={field} className="block">
               <span className="text-sm font-medium text-slate-700">{label}</span>
