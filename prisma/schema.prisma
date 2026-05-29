@@ -57,6 +57,38 @@ model Schedule {
   @@map("schedules")
 }
 
+model ScheduleTemplate {
+  id    Int    @id @default(autoincrement())
+  name  String
+
+  items ScheduleTemplateItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("schedule_templates")
+}
+
+model ScheduleTemplateItem {
+  id         Int    @id @default(autoincrement())
+  templateId Int
+  title      String
+  startTime  String
+  endTime    String
+  memo       String?
+  categoryId Int
+
+  template ScheduleTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  category ScheduleCategory @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([templateId])
+
+  @@map("schedule_template_items")
+}
+
 model NutritionGoal {
   id        Int      @id @default(autoincrement())
   calories  Int
@@ -76,6 +108,7 @@ model ScheduleCategory {
   color String
 
   schedules Schedule[]
+  templateItems ScheduleTemplateItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

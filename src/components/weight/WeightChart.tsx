@@ -40,6 +40,12 @@ function buildPath(points: ChartPoint[], key: "y" | "averageY") {
     .join(" ");
 }
 
+function isNextDay(current: string, next: string) {
+  const currentTime = new Date(`${current}T00:00:00`).getTime();
+  const nextTime = new Date(`${next}T00:00:00`).getTime();
+  return nextTime - currentTime <= 24 * 60 * 60 * 1000;
+}
+
 export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
   const [selectedRange, setSelectedRange] = useState(rangeOptions[0]);
 
@@ -226,23 +232,37 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
                 );
               })}
 
-              <path
-                d={buildPath(chartData.points, "averageY")}
-                fill="none"
-                stroke="#059669"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeDasharray="6 6"
-              />
-              <path
-                d={buildPath(chartData.points, "y")}
-                fill="none"
-                stroke="#0f172a"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+              {chartData.points.length > 1 ? (
+                <path
+                  d={buildPath(chartData.points, "averageY")}
+                  fill="none"
+                  stroke="#059669"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeDasharray="6 6"
+                />
+              ) : null}
+
+              {chartData.points.slice(0, -1).map((point, index) => {
+                const nextPoint = chartData.points[index + 1];
+
+                return (
+                  <line
+                    key={`${point.date}-${nextPoint.date}`}
+                    x1={point.x}
+                    y1={point.y}
+                    x2={nextPoint.x}
+                    y2={nextPoint.y}
+                    stroke="#0f172a"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray={
+                      isNextDay(point.date, nextPoint.date) ? undefined : "4 7"
+                    }
+                  />
+                );
+              })}
 
               {chartData.points.map((point) => (
                 <g key={`${point.date}-${point.weightKg}`}>
