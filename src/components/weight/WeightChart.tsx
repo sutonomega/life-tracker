@@ -108,7 +108,7 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
   const latestAverage = chartData.points.at(-1)?.averageKg ?? null;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-col gap-3 border-b border-slate-100 pb-4 xl:flex-row xl:items-center xl:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-slate-950">体重グラフ</h3>
@@ -186,7 +186,7 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="max-w-full overflow-x-auto">
             <svg
               viewBox={`0 0 ${chartWidth} ${chartHeight}`}
               className="h-72 min-w-[640px] rounded-lg border border-slate-100 bg-slate-50"

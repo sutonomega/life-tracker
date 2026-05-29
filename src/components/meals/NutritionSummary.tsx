@@ -68,7 +68,7 @@ export function NutritionSummary({ meals, goal }: NutritionSummaryProps) {
   ];
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-col gap-2 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-slate-950">栄養サマリー</h3>
@@ -77,7 +77,7 @@ export function NutritionSummary({ meals, goal }: NutritionSummaryProps) {
         <span className="text-sm font-semibold text-slate-500">{meals.length}件</span>
       </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-5 grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {rows.map((row) => (
           <article key={row.label} className="rounded-lg border border-slate-100 p-4">
             <div className="flex items-center justify-between gap-3">

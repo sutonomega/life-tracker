@@ -1,17 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { getLocalDateString } from "../../lib/utils";
 import { ScheduleCopyPanel } from "./ScheduleCopyPanel";
 import { ScheduleForm } from "./ScheduleForm";
 import { ScheduleTemplatePanel } from "./ScheduleTemplatePanel";
 import { TimeChart } from "./TimeChart";
 
-function getToday() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export function ScheduleDashboard() {
-  const [selectedDate, setSelectedDate] = useState(getToday);
+  const [selectedDate, setSelectedDate] = useState(getLocalDateString);
   const [activeTab, setActiveTab] = useState<"form" | "copy" | "template">("form");
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -21,15 +18,15 @@ export function ScheduleDashboard() {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(360px,420px)_1fr]">
-      <div className="space-y-4">
-        <label className="block rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <span className="text-sm font-medium text-slate-700">表示日</span>
+    <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(320px,420px)_1fr]">
+      <div className="min-w-0 space-y-4">
+        <label className="block rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+          <span className="sr-only">表示日</span>
           <input
             type="date"
             value={selectedDate}
             onChange={(event) => setSelectedDate(event.target.value)}
-            className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+            className="date-input h-10 w-full max-w-full rounded-md border border-slate-300 px-3 text-sm leading-10 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
           />
         </label>
         <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
@@ -43,7 +40,7 @@ export function ScheduleDashboard() {
                 key={value}
                 type="button"
                 onClick={() => setActiveTab(value as typeof activeTab)}
-                className={`h-10 rounded-md px-2 text-sm font-semibold transition ${
+                className={`h-9 rounded-md px-1 text-xs font-semibold transition sm:h-10 sm:px-2 sm:text-sm ${
                   activeTab === value
                     ? "bg-slate-950 text-white"
                     : "text-slate-600 hover:bg-slate-50"
@@ -56,7 +53,11 @@ export function ScheduleDashboard() {
         </div>
 
         {activeTab === "form" ? (
-          <ScheduleForm onCreated={refreshSchedules} />
+          <ScheduleForm
+            key={selectedDate}
+            selectedDate={selectedDate}
+            onCreated={refreshSchedules}
+          />
         ) : null}
         {activeTab === "copy" ? (
           <ScheduleCopyPanel selectedDate={selectedDate} onCopied={refreshSchedules} />

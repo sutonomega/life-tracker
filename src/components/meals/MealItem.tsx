@@ -130,14 +130,14 @@ export function MealItem({ meal, onChanged }: MealItemProps) {
   if (isEditing) {
     return (
       <form onSubmit={handleSave} className="border-b border-slate-100 py-4 last:border-b-0">
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid min-w-0 gap-3 md:grid-cols-2">
           <label className="block">
             <span className="text-xs font-semibold text-slate-500">日付</span>
             <input
               type="date"
               value={form.date}
               onChange={(event) => updateField("date", event.target.value)}
-              className="mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+              className="date-input mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm leading-10 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
               required
             />
           </label>
@@ -166,7 +166,7 @@ export function MealItem({ meal, onChanged }: MealItemProps) {
               required
             />
           </label>
-          <div className="grid gap-3 md:col-span-2 sm:grid-cols-4">
+          <div className="grid min-w-0 gap-3 md:col-span-2 sm:grid-cols-4">
             {[
               ["calories", "kcal", "1"],
               ["proteinG", "P g", "any"],
@@ -222,7 +222,7 @@ export function MealItem({ meal, onChanged }: MealItemProps) {
   }
 
   return (
-    <article className="grid gap-3 border-b border-slate-100 py-4 last:border-b-0 md:grid-cols-[96px_1fr_240px_auto] md:items-center">
+    <article className="grid min-w-0 gap-3 border-b border-slate-100 py-4 last:border-b-0 md:grid-cols-[96px_1fr_240px_auto] md:items-center">
       <div>
         <span className="inline-flex rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">
           {getMealTypeLabel(meal.mealType)}
@@ -238,7 +238,7 @@ export function MealItem({ meal, onChanged }: MealItemProps) {
           <p className="mt-1 text-sm font-medium text-rose-700">{error}</p>
         ) : null}
       </div>
-      <div className="grid grid-cols-4 gap-2 text-sm">
+      <div className="grid min-w-0 grid-cols-4 gap-2 text-sm">
         <p>
           <span className="block text-xs text-slate-400">kcal</span>
           <span className="font-semibold text-slate-950">{meal.calories}</span>

@@ -127,7 +127,7 @@ export function MealForm({ selectedDate, onCreated }: MealFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+      className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
     >
       <div>
         <h3 className="text-lg font-semibold text-slate-950">登録</h3>
@@ -136,7 +136,7 @@ export function MealForm({ selectedDate, onCreated }: MealFormProps) {
         </p>
       </div>
 
-      <div className="mt-5 grid gap-4">
+      <div className="mt-5 grid min-w-0 gap-4">
         <label className="block">
           <span className="text-sm font-medium text-slate-700">食事区分</span>
           <select
@@ -164,7 +164,7 @@ export function MealForm({ selectedDate, onCreated }: MealFormProps) {
           />
         </label>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid min-w-0 gap-4 sm:grid-cols-2">
           <label className="block">
             <span className="text-sm font-medium text-slate-700">kcal</span>
             <input

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { getLocalDateString } from "../../lib/utils";
 
 type ScheduleCategory = {
   id: number;
@@ -18,7 +19,7 @@ type FormState = {
 };
 
 const initialFormState: FormState = {
-  date: new Date().toISOString().slice(0, 10),
+  date: getLocalDateString(),
   title: "",
   startTime: "",
   endTime: "",
@@ -27,11 +28,15 @@ const initialFormState: FormState = {
 };
 
 type ScheduleFormProps = {
+  selectedDate: string;
   onCreated?: (date: string) => void;
 };
 
-export function ScheduleForm({ onCreated }: ScheduleFormProps) {
-  const [form, setForm] = useState<FormState>(initialFormState);
+export function ScheduleForm({ selectedDate, onCreated }: ScheduleFormProps) {
+  const [form, setForm] = useState<FormState>({
+    ...initialFormState,
+    date: selectedDate,
+  });
   const [categories, setCategories] = useState<ScheduleCategory[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -132,7 +137,7 @@ export function ScheduleForm({ onCreated }: ScheduleFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+      className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
     >
       <div className="flex flex-col gap-1">
         <h3 className="text-lg font-semibold text-slate-950">
@@ -143,14 +148,14 @@ export function ScheduleForm({ onCreated }: ScheduleFormProps) {
         </p>
       </div>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
+      <div className="mt-5 grid min-w-0 gap-4 md:grid-cols-2">
         <label className="block">
           <span className="text-sm font-medium text-slate-700">日付</span>
           <input
             type="date"
             value={form.date}
             onChange={(event) => updateField("date", event.target.value)}
-            className="mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+            className="date-input mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm leading-[2.75rem] outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
             required
           />
         </label>

@@ -5,13 +5,13 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <section className="border-b border-slate-200 pb-6">
         <p className="text-sm font-semibold text-emerald-700">Settings</p>
-        <h2 className="mt-2 text-3xl font-semibold text-slate-950">設定</h2>
+        <h2 className="mt-2 text-xl font-semibold text-slate-950 sm:text-3xl">設定</h2>
         <p className="mt-3 text-sm text-slate-600">
           栄養評価に使う目標値を調整します。
         </p>
       </section>
 
-      <div className="max-w-3xl">
+      <div className="max-w-3xl min-w-0">
         <NutritionGoalForm />
       </div>
     </div>

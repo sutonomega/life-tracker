@@ -92,7 +92,7 @@ export function MealCopyPanel({
   }
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div>
         <h3 className="text-lg font-semibold text-slate-950">コピー</h3>
         <p className="mt-1 text-sm text-slate-500">
@@ -106,7 +106,7 @@ export function MealCopyPanel({
           type="date"
           value={sourceDate}
           onChange={(event) => setSourceDate(event.target.value)}
-          className="mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          className="date-input mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm leading-[2.75rem] outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
         />
       </label>
 

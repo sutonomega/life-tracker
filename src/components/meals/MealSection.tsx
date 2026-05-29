@@ -1,18 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getLocalDateString } from "../../lib/utils";
 import { Meal, MealForm } from "./MealForm";
 import { MealCopyPanel } from "./MealCopyPanel";
 import { MealItem } from "./MealItem";
 import { MealTemplatePanel } from "./MealTemplatePanel";
 import { NutritionGoal, NutritionSummary } from "./NutritionSummary";
 
-function getToday() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export function MealSection() {
-  const [selectedDate, setSelectedDate] = useState(getToday);
+  const [selectedDate, setSelectedDate] = useState(getLocalDateString);
   const [activeTab, setActiveTab] = useState<"form" | "copy" | "template">("form");
   const [refreshKey, setRefreshKey] = useState(0);
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -57,16 +54,16 @@ export function MealSection() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid gap-6 xl:grid-cols-[minmax(320px,400px)_1fr]">
-        <div className="space-y-4">
-          <label className="block rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <span className="text-sm font-medium text-slate-700">表示日</span>
+    <div className="min-w-0 space-y-6">
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(320px,400px)_1fr]">
+        <div className="min-w-0 space-y-4">
+          <label className="block rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+            <span className="sr-only">表示日</span>
             <input
               type="date"
               value={selectedDate}
               onChange={(event) => setSelectedDate(event.target.value)}
-              className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+              className="date-input h-10 w-full max-w-full rounded-md border border-slate-300 px-3 text-sm leading-10 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
             />
           </label>
           <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
@@ -80,7 +77,7 @@ export function MealSection() {
                   key={value}
                   type="button"
                   onClick={() => setActiveTab(value as typeof activeTab)}
-                  className={`h-10 rounded-md px-2 text-sm font-semibold transition ${
+                  className={`h-9 rounded-md px-1 text-xs font-semibold transition sm:h-10 sm:px-2 sm:text-sm ${
                     activeTab === value
                       ? "bg-slate-950 text-white"
                       : "text-slate-600 hover:bg-slate-50"
@@ -111,9 +108,9 @@ export function MealSection() {
           ) : null}
         </div>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <NutritionSummary meals={meals} goal={goal} />
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex flex-col gap-2 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-slate-950">食事記録</h3>

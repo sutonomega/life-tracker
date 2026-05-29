@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { getLocalDateString } from "../../lib/utils";
 
 type WeightFormProps = {
   onCreated?: () => void;
@@ -13,7 +14,7 @@ type FormState = {
 };
 
 const initialFormState: FormState = {
-  date: new Date().toISOString().slice(0, 10),
+  date: getLocalDateString(),
   weightKg: "",
   memo: "",
 };
@@ -83,7 +84,7 @@ export function WeightForm({ onCreated }: WeightFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+      className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
     >
       <div>
         <h3 className="text-lg font-semibold text-slate-950">体重入力</h3>
@@ -99,7 +100,7 @@ export function WeightForm({ onCreated }: WeightFormProps) {
             type="date"
             value={form.date}
             onChange={(event) => updateField("date", event.target.value)}
-            className="mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+            className="date-input mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm leading-[2.75rem] outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
             required
           />
         </label>

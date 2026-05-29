@@ -116,7 +116,7 @@ export function NutritionGoalForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+      className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
     >
       <div>
         <h3 className="text-lg font-semibold text-slate-950">栄養目標</h3>
@@ -126,7 +126,7 @@ export function NutritionGoalForm() {
       {isLoading ? <p className="mt-5 text-sm text-slate-500">読み込み中...</p> : null}
 
       {!isLoading ? (
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <div className="mt-5 grid min-w-0 gap-4 sm:grid-cols-2">
           {[
             ["calories", "kcal", "1", "1"],
             ["proteinG", "P g", "any", "0"],

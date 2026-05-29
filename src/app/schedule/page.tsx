@@ -5,7 +5,7 @@ export default function SchedulePage() {
     <div className="space-y-6">
       <section className="border-b border-slate-200 pb-6">
         <p className="text-sm font-semibold text-emerald-700">Schedule</p>
-        <h2 className="mt-2 text-3xl font-semibold text-slate-950">
+        <h2 className="mt-2 text-xl font-semibold text-slate-950 sm:text-3xl">
           スケジュール
         </h2>
         <p className="mt-3 text-sm text-slate-600">

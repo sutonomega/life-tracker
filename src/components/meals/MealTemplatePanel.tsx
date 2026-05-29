@@ -205,7 +205,7 @@ export function MealTemplatePanel({
   }
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div>
         <h3 className="text-lg font-semibold text-slate-950">テンプレート</h3>
         <p className="mt-1 text-sm text-slate-500">
@@ -213,7 +213,7 @@ export function MealTemplatePanel({
         </p>
       </div>
 
-      <div className="mt-5 grid gap-4">
+      <div className="mt-5 grid min-w-0 gap-4">
         <div className="rounded-md bg-slate-50 p-3">
           <label className="block">
             <span className="text-sm font-medium text-slate-700">
@@ -285,7 +285,7 @@ export function MealTemplatePanel({
             </div>
           ) : null}
 
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div className="mt-3 grid min-w-0 gap-2 sm:grid-cols-2">
             <button
               type="button"
               onClick={handleCreateFromTemplate}
