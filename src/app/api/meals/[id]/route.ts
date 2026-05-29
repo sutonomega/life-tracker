@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureDatabase } from "../../../../lib/database";
 import { prisma } from "../../../../lib/prisma";
 import { parseJsonBody } from "../../../../lib/request";
 
@@ -35,7 +34,6 @@ async function getId(context: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, context: RouteContext) {
-  await ensureDatabase();
 
   const id = await getId(context);
 
@@ -122,7 +120,6 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
-  await ensureDatabase();
 
   const id = await getId(context);
 

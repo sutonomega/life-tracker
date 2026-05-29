@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
-import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody } from "../../../lib/request";
 import { isValidDate } from "../../../lib/validation";
@@ -18,7 +17,6 @@ const templateInclude = {
 } satisfies Prisma.ScheduleTemplateInclude;
 
 export async function GET() {
-  await ensureDatabase();
 
   const templates = await prisma.scheduleTemplate.findMany({
     include: templateInclude,
@@ -29,7 +27,6 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  await ensureDatabase();
 
   const body = await parseJsonBody<ScheduleTemplateRequestBody>(request);
 

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureDatabase } from "../../../../lib/database";
 import { prisma } from "../../../../lib/prisma";
 import { parseJsonBody } from "../../../../lib/request";
 import { isValidDate } from "../../../../lib/validation";
@@ -10,7 +9,6 @@ type CopySchedulesRequestBody = {
 };
 
 export async function POST(request: NextRequest) {
-  await ensureDatabase();
 
   const body = await parseJsonBody<CopySchedulesRequestBody>(request);
 

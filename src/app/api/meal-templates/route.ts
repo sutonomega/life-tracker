@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureDatabase } from "../../../lib/database";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody } from "../../../lib/request";
 
@@ -21,7 +20,6 @@ function isValidNonNegativeNumber(value: number) {
 }
 
 export async function GET() {
-  await ensureDatabase();
 
   const templates = await prisma.mealTemplate.findMany({
     orderBy: { updatedAt: "desc" },
@@ -31,7 +29,6 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  await ensureDatabase();
 
   const body = await parseJsonBody<MealTemplateRequestBody>(request);
 

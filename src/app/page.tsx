@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ensureDatabase } from "../lib/database";
 import { prisma } from "../lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -51,7 +50,6 @@ function formatPfc(proteinG: number, fatG: number, carbsG: number) {
 }
 
 export default async function Home() {
-  await ensureDatabase();
 
   const today = getToday();
   const [schedules, latestWeightLog, meals, goal] = await Promise.all([
