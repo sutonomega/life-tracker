@@ -284,7 +284,7 @@ export function ScheduleTemplatePanel({
   }
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div>
         <h3 className="text-lg font-semibold text-slate-950">
           テンプレート
@@ -294,14 +294,14 @@ export function ScheduleTemplatePanel({
         </p>
       </div>
 
-      <div className="mt-4 grid gap-3">
+      <div className="mt-4 grid min-w-0 gap-3">
         <label className="block">
           <span className="text-sm font-medium text-slate-700">テンプレート名</span>
           <input
             type="text"
             value={templateName}
             onChange={(event) => setTemplateName(event.target.value)}
-            className="mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+            className="date-input mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm leading-10 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
             placeholder="例: 平日"
           />
         </label>
@@ -315,7 +315,7 @@ export function ScheduleTemplatePanel({
         </button>
       </div>
 
-      <div className="mt-5 grid gap-3">
+      <div className="mt-5 grid min-w-0 gap-3">
         <label className="block">
           <span className="text-sm font-medium text-slate-700">適用テンプレート</span>
           <select
@@ -392,7 +392,7 @@ export function ScheduleTemplatePanel({
       {templates.length > 0 ? (
         <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
           {templates.map((template) => (
-            <div key={template.id} className="grid gap-2">
+            <div key={template.id} className="grid min-w-0 gap-2">
               <input
                 type="text"
                 value={editingNames[template.id] ?? template.name}

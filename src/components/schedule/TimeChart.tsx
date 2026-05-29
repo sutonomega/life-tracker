@@ -96,7 +96,7 @@ export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
   }, [schedules]);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-col gap-2 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-slate-950">
@@ -131,7 +131,7 @@ export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
       ) : null}
 
       {!isLoading && !error && sortedSchedules.length > 0 ? (
-        <div className="mt-5 overflow-x-auto">
+        <div className="mt-5 max-w-full overflow-x-auto">
           <div
             className="relative min-w-[680px]"
             style={{ height: `${timelineHeight + 24}px` }}

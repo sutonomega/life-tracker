@@ -21,3 +21,22 @@ body {
 * {
   box-sizing: border-box;
 }
+
+input,
+select,
+textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.date-input {
+  -webkit-appearance: none;
+  appearance: none;
+  min-inline-size: 0;
+  padding-block: 0;
+}
+
+label:has(.date-input) {
+  min-inline-size: 0;
+  overflow: hidden;
+}

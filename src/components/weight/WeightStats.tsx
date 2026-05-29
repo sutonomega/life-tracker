@@ -129,7 +129,7 @@ function WeightLogItem({ log, onChanged }: WeightLogItemProps) {
               type="date"
               value={form.date}
               onChange={(event) => updateField("date", event.target.value)}
-              className="mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+              className="date-input mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm leading-10 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
               required
             />
           </label>
@@ -232,7 +232,7 @@ export function WeightStats({
   })();
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-col gap-2 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-slate-950">体重記録</h3>

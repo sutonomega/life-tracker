@@ -5,7 +5,7 @@ export default function MealsPage() {
     <div className="space-y-6">
       <section className="border-b border-slate-200 pb-6">
         <p className="text-sm font-semibold text-emerald-700">Meals</p>
-        <h2 className="mt-2 text-3xl font-semibold text-slate-950">食事</h2>
+        <h2 className="mt-2 text-xl font-semibold text-slate-950 sm:text-3xl">食事</h2>
         <p className="mt-3 text-sm text-slate-600">
           食事のカロリーとPFCを記録し、日別に集計します。
         </p>
