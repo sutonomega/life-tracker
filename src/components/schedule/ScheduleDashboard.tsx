@@ -12,6 +12,7 @@ function getToday() {
 
 export function ScheduleDashboard() {
   const [selectedDate, setSelectedDate] = useState(getToday);
+  const [activeTab, setActiveTab] = useState<"form" | "copy" | "template">("form");
   const [refreshKey, setRefreshKey] = useState(0);
 
   function refreshSchedules(date: string) {
@@ -31,12 +32,41 @@ export function ScheduleDashboard() {
             className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
           />
         </label>
-        <ScheduleForm onCreated={refreshSchedules} />
-        <ScheduleCopyPanel selectedDate={selectedDate} onCopied={refreshSchedules} />
-        <ScheduleTemplatePanel
-          selectedDate={selectedDate}
-          onApplied={refreshSchedules}
-        />
+        <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+          <div className="grid grid-cols-3 gap-1">
+            {[
+              ["form", "スケジュール登録"],
+              ["copy", "日付コピー"],
+              ["template", "テンプレート"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setActiveTab(value as typeof activeTab)}
+                className={`h-10 rounded-md px-2 text-sm font-semibold transition ${
+                  activeTab === value
+                    ? "bg-slate-950 text-white"
+                    : "text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {activeTab === "form" ? (
+          <ScheduleForm onCreated={refreshSchedules} />
+        ) : null}
+        {activeTab === "copy" ? (
+          <ScheduleCopyPanel selectedDate={selectedDate} onCopied={refreshSchedules} />
+        ) : null}
+        {activeTab === "template" ? (
+          <ScheduleTemplatePanel
+            selectedDate={selectedDate}
+            onApplied={refreshSchedules}
+          />
+        ) : null}
       </div>
 
       <TimeChart selectedDate={selectedDate} refreshKey={refreshKey} />
