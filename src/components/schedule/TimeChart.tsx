@@ -9,8 +9,8 @@ type TimeChartProps = {
 };
 
 const minutesPerDay = 24 * 60;
-const timelineHeight = 24 * 64;
-const minimumBlockHeight = 72;
+const timelineHeight = 24 * 96;
+const minimumBlockHeight = 8;
 
 function formatDateLabel(date: string) {
   return new Intl.DateTimeFormat("ja-JP", {

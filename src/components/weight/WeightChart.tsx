@@ -43,7 +43,7 @@ function buildPath(points: ChartPoint[], key: "y" | "averageY") {
 function isNextDay(current: string, next: string) {
   const currentTime = new Date(`${current}T00:00:00`).getTime();
   const nextTime = new Date(`${next}T00:00:00`).getTime();
-  return nextTime - currentTime <= 24 * 60 * 60 * 1000;
+  return nextTime - currentTime === 24 * 60 * 60 * 1000;
 }
 
 export function WeightChart({ logs, isLoading, error }: WeightChartProps) {

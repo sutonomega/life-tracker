@@ -50,6 +50,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const targetMealCount = await prisma.meal.count({
+    where: { date: targetDate },
+  });
+
+  if (targetMealCount > 0) {
+    return NextResponse.json(
+      { message: "コピー先の日付にはすでに食事記録があります。" },
+      { status: 409 },
+    );
+  }
+
   const createdMeals = await prisma.$transaction(
     sourceMeals.map((meal) =>
       prisma.meal.create({

@@ -16,7 +16,9 @@ export function ScheduleCopyPanel({
   const [previewSchedules, setPreviewSchedules] = useState<Schedule[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [targetScheduleCount, setTargetScheduleCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingTarget, setIsCheckingTarget] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -54,6 +56,40 @@ export function ScheduleCopyPanel({
     fetchPreview();
   }, [sourceDate]);
 
+  useEffect(() => {
+    async function fetchTargetSchedules() {
+      setTargetScheduleCount(0);
+
+      if (!selectedDate) {
+        return;
+      }
+
+      setIsCheckingTarget(true);
+
+      try {
+        const params = new URLSearchParams({ date: selectedDate });
+        const response = await fetch(`/api/schedules?${params.toString()}`);
+
+        if (!response.ok) {
+          throw new Error("コピー先の確認に失敗しました。");
+        }
+
+        const schedules = (await response.json()) as Schedule[];
+        setTargetScheduleCount(schedules.length);
+      } catch (fetchError) {
+        setError(
+          fetchError instanceof Error
+            ? fetchError.message
+            : "コピー先の確認に失敗しました。",
+        );
+      } finally {
+        setIsCheckingTarget(false);
+      }
+    }
+
+    fetchTargetSchedules();
+  }, [selectedDate]);
+
   async function handleCopy() {
     setMessage("");
     setError("");
@@ -79,6 +115,7 @@ export function ScheduleCopyPanel({
       }
 
       setMessage(`${data.count ?? 0}件の予定をコピーしました。`);
+      setTargetScheduleCount(data.count ?? 0);
       onCopied(selectedDate);
     } catch (copyError) {
       setError(
@@ -130,12 +167,22 @@ export function ScheduleCopyPanel({
       {message ? (
         <p className="mt-3 text-sm font-medium text-emerald-700">{message}</p>
       ) : null}
+      {targetScheduleCount > 0 ? (
+        <p className="mt-3 text-sm font-medium text-amber-700">
+          コピー先の表示日にはすでにスケジュールがあります。
+        </p>
+      ) : null}
 
       <div className="mt-4 flex justify-end">
         <button
           type="button"
           onClick={handleCopy}
-          disabled={isSubmitting || previewSchedules.length === 0}
+          disabled={
+            isSubmitting ||
+            isCheckingTarget ||
+            previewSchedules.length === 0 ||
+            targetScheduleCount > 0
+          }
           className="h-10 w-full rounded-md bg-slate-950 px-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400 sm:w-auto"
         >
           {isSubmitting ? "コピー中..." : "表示日へコピー"}

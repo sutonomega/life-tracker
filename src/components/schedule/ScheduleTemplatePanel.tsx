@@ -36,7 +36,9 @@ export function ScheduleTemplatePanel({
   const [editingNames, setEditingNames] = useState<Record<number, string>>({});
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [applyDateScheduleCount, setApplyDateScheduleCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCheckingApplyDate, setIsCheckingApplyDate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedTemplate = useMemo(() => {
@@ -78,6 +80,40 @@ export function ScheduleTemplatePanel({
 
     fetchTemplates();
   }, []);
+
+  useEffect(() => {
+    async function fetchApplyDateSchedules() {
+      setApplyDateScheduleCount(0);
+
+      if (!applyDate) {
+        return;
+      }
+
+      setIsCheckingApplyDate(true);
+
+      try {
+        const params = new URLSearchParams({ date: applyDate });
+        const response = await fetch(`/api/schedules?${params.toString()}`);
+
+        if (!response.ok) {
+          throw new Error("適用先の確認に失敗しました。");
+        }
+
+        const schedules = (await response.json()) as unknown[];
+        setApplyDateScheduleCount(schedules.length);
+      } catch (fetchError) {
+        setError(
+          fetchError instanceof Error
+            ? fetchError.message
+            : "適用先の確認に失敗しました。",
+        );
+      } finally {
+        setIsCheckingApplyDate(false);
+      }
+    }
+
+    fetchApplyDateSchedules();
+  }, [applyDate]);
 
   async function handleCreate() {
     setMessage("");
@@ -211,6 +247,7 @@ export function ScheduleTemplatePanel({
       }
 
       setMessage(`${data.count ?? 0}件の予定を登録しました。`);
+      setApplyDateScheduleCount(data.count ?? 0);
       onApplied(applyDate);
     } catch (applyError) {
       setError(
@@ -311,12 +348,23 @@ export function ScheduleTemplatePanel({
         <button
           type="button"
           onClick={handleApply}
-          disabled={isSubmitting || !selectedTemplate}
+          disabled={
+            isSubmitting ||
+            isCheckingApplyDate ||
+            !selectedTemplate ||
+            applyDateScheduleCount > 0
+          }
           className="h-10 w-full rounded-md bg-slate-950 px-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400 sm:w-auto"
         >
           {isSubmitting ? "適用中..." : "適用する"}
         </button>
       </div>
+
+      {applyDateScheduleCount > 0 ? (
+        <p className="mt-3 text-sm font-medium text-amber-700">
+          適用先の日付にはすでにスケジュールがあります。
+        </p>
+      ) : null}
 
       {templates.length > 0 ? (
         <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">

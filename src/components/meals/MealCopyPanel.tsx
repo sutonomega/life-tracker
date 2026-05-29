@@ -5,10 +5,15 @@ import { Meal } from "./MealForm";
 
 type MealCopyPanelProps = {
   selectedDate: string;
+  targetMealCount: number;
   onCopied: () => void;
 };
 
-export function MealCopyPanel({ selectedDate, onCopied }: MealCopyPanelProps) {
+export function MealCopyPanel({
+  selectedDate,
+  targetMealCount,
+  onCopied,
+}: MealCopyPanelProps) {
   const [sourceDate, setSourceDate] = useState(selectedDate);
   const [previewMeals, setPreviewMeals] = useState<Meal[]>([]);
   const [message, setMessage] = useState("");
@@ -128,12 +133,17 @@ export function MealCopyPanel({ selectedDate, onCopied }: MealCopyPanelProps) {
       {message ? (
         <p className="mt-3 text-sm font-medium text-emerald-700">{message}</p>
       ) : null}
+      {targetMealCount > 0 ? (
+        <p className="mt-3 text-sm font-medium text-amber-700">
+          コピー先の表示日にはすでに食事記録があります。
+        </p>
+      ) : null}
 
       <div className="mt-4 flex justify-end">
         <button
           type="button"
           onClick={handleCopy}
-          disabled={isSubmitting || previewMeals.length === 0}
+          disabled={isSubmitting || previewMeals.length === 0 || targetMealCount > 0}
           className="h-10 w-full rounded-md bg-slate-950 px-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400 sm:w-auto"
         >
           {isSubmitting ? "コピー中..." : "表示日へコピー"}

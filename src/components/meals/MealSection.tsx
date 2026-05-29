@@ -68,7 +68,11 @@ export function MealSection() {
             />
           </label>
           <MealForm selectedDate={selectedDate} onCreated={refreshMeals} />
-          <MealCopyPanel selectedDate={selectedDate} onCopied={refreshMeals} />
+          <MealCopyPanel
+            selectedDate={selectedDate}
+            targetMealCount={meals.length}
+            onCopied={refreshMeals}
+          />
         </div>
 
         <div className="space-y-6">

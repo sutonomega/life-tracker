@@ -50,6 +50,17 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const targetScheduleCount = await prisma.schedule.count({
+    where: { date: targetDate },
+  });
+
+  if (targetScheduleCount > 0) {
+    return NextResponse.json(
+      { message: "コピー先の日付にはすでにスケジュールがあります。" },
+      { status: 409 },
+    );
+  }
+
   const createdSchedules = await prisma.$transaction(
     sourceSchedules.map((schedule) =>
       prisma.schedule.create({
