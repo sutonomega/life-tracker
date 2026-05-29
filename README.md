@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Life Tracker
 
-## Getting Started
+生活ログを記録するための Next.js アプリです。スケジュール、体重、食事、栄養目標をまとめて管理できます。
 
-First, run the development server:
+正式なアプリ名は **Life Tracker** です。
+
+## 主な機能
+
+* 今日の生活ログを確認できるトップ画面
+* スケジュール登録、タイムチャート表示、編集、削除
+* 体重登録、一覧表示、期間切替グラフ表示、14日平均表示、編集、削除
+* 食事登録、カロリー / PFC 集計、編集、削除
+* 栄養目標設定と過不足評価
+* SQLite / Prisma を使ったローカルDB保存
+
+## 技術構成
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* Prisma
+* SQLite
+
+## セットアップ
+
+```bash
+npm install
+```
+
+`.env.local` を作成し、DATABASE_URL を設定します。
+
+```env
+DATABASE_URL="file:./dev.db"
+```
+
+Prisma Client を生成します。
+
+```bash
+npx prisma generate
+```
+
+DB を作成・更新します。
+
+```bash
+npx prisma db push
+```
+
+## 起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで http://localhost:3000 を開きます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 確認コマンド
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## 画面
 
-To learn more about Next.js, take a look at the following resources:
+* `/` - トップ画面
+* `/schedule` - スケジュール管理
+* `/weight` - 体重管理
+* `/meals` - 食事管理
+* `/settings` - 栄養目標設定
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 補足
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ローカルDBが未作成の状態でも主要テーブルはアプリ起動時に補完されます。通常は `npx prisma db push` を実行してから利用してください。

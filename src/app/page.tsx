@@ -1,4 +1,8 @@
 import Link from "next/link";
+import { ensureDatabase } from "../lib/database";
+import { prisma } from "../lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 const featureLinks = [
   {
@@ -31,20 +35,84 @@ const featureLinks = [
   },
 ];
 
-const dashboardItems = [
-  { label: "予定", value: "0件", detail: "スケジュール未登録" },
-  { label: "体重", value: "-- kg", detail: "最新記録なし" },
-  { label: "摂取カロリー", value: "-- kcal", detail: "食事記録なし" },
-  { label: "PFC", value: "-- / -- / --", detail: "集計待ち" },
+const mealSections = [
+  { type: "breakfast", label: "朝" },
+  { type: "lunch", label: "昼" },
+  { type: "dinner", label: "夜" },
+  { type: "snack", label: "間食" },
 ];
 
-const nextActions = [
-  "今日のスケジュールを登録",
-  "最新の体重を入力",
-  "食事とPFCを記録",
-];
+function getToday() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-export default function Home() {
+function formatPfc(proteinG: number, fatG: number, carbsG: number) {
+  return `${proteinG.toFixed(1)} / ${fatG.toFixed(1)} / ${carbsG.toFixed(1)}g`;
+}
+
+export default async function Home() {
+  await ensureDatabase();
+
+  const today = getToday();
+  const [schedules, latestWeightLog, meals, goal] = await Promise.all([
+    prisma.schedule.findMany({
+      where: { date: today },
+      include: { category: true },
+      orderBy: { startTime: "asc" },
+    }),
+    prisma.weightLog.findFirst({
+      orderBy: { date: "desc" },
+    }),
+    prisma.meal.findMany({
+      where: { date: today },
+      orderBy: { id: "asc" },
+    }),
+    prisma.nutritionGoal.findFirst({
+      orderBy: { id: "asc" },
+    }),
+  ]);
+
+  const totals = meals.reduce(
+    (total, meal) => ({
+      calories: total.calories + meal.calories,
+      proteinG: total.proteinG + meal.proteinG,
+      fatG: total.fatG + meal.fatG,
+      carbsG: total.carbsG + meal.carbsG,
+    }),
+    { calories: 0, proteinG: 0, fatG: 0, carbsG: 0 },
+  );
+
+  const dashboardItems = [
+    {
+      label: "予定",
+      value: `${schedules.length}件`,
+      detail: schedules[0]
+        ? `${schedules[0].startTime} ${schedules[0].title}`
+        : "スケジュール未登録",
+    },
+    {
+      label: "体重",
+      value: latestWeightLog ? `${latestWeightLog.weightKg.toFixed(1)} kg` : "-- kg",
+      detail: latestWeightLog ? latestWeightLog.date : "最新記録なし",
+    },
+    {
+      label: "摂取カロリー",
+      value: meals.length > 0 ? `${totals.calories} kcal` : "-- kcal",
+      detail: goal ? `目標 ${goal.calories} kcal` : "食事記録なし",
+    },
+    {
+      label: "PFC",
+      value: meals.length > 0 ? formatPfc(totals.proteinG, totals.fatG, totals.carbsG) : "-- / -- / --",
+      detail: meals.length > 0 ? `${meals.length}件の食事を集計` : "集計待ち",
+    },
+  ];
+
+  const nextActions = [
+    schedules.length === 0 ? "今日のスケジュールを登録" : "次の予定を確認",
+    latestWeightLog?.date === today ? "体重記録を確認" : "最新の体重を入力",
+    meals.length === 0 ? "食事とPFCを記録" : "栄養サマリーを確認",
+  ];
+
   return (
     <div className="space-y-8">
       <section className="border-b border-slate-200 pb-6">
@@ -53,10 +121,12 @@ export default function Home() {
             <p className="text-sm font-semibold text-emerald-700">
               Daily dashboard
             </p>
-            <h2 className="mt-2 text-3xl font-semibold text-slate-950">
+            <h2 className="mt-2 text-2xl font-semibold text-slate-950 sm:text-3xl">
               今日の生活ログ
             </h2>
-            <p className="mt-3 text-sm text-slate-600">未登録の項目があります</p>
+            <p className="mt-3 text-sm text-slate-600">
+              スケジュール・体重・食事をまとめて確認できます
+            </p>
           </div>
           <Link
             href="/schedule"
@@ -74,7 +144,7 @@ export default function Home() {
             className="min-h-32 rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
           >
             <p className="text-sm font-medium text-slate-500">{item.label}</p>
-            <p className="mt-3 text-2xl font-semibold text-slate-950">
+            <p className="mt-3 break-words text-xl font-semibold text-slate-950 sm:text-2xl">
               {item.value}
             </p>
             <p className="mt-2 text-sm text-slate-500">{item.detail}</p>
@@ -135,20 +205,32 @@ export default function Home() {
             <h3 className="text-lg font-semibold text-slate-950">
               今日のサマリー
             </h3>
-            <span className="text-sm text-slate-500">未登録</span>
+            <span className="text-sm text-slate-500">{today}</span>
           </div>
           <div className="mt-5 divide-y divide-slate-100">
-            {["朝", "昼", "夜"].map((meal) => (
-              <div
-                key={meal}
-                className="flex items-center justify-between gap-4 py-3"
-              >
-                <p className="text-sm font-medium text-slate-500">{meal}</p>
-                <p className="text-base font-semibold text-slate-950">
-                  記録なし
-                </p>
-              </div>
-            ))}
+            {mealSections.map((section) => {
+              const sectionMeals = meals.filter(
+                (meal) => meal.mealType === section.type,
+              );
+              const calories = sectionMeals.reduce(
+                (total, meal) => total + meal.calories,
+                0,
+              );
+
+              return (
+                <div
+                  key={section.type}
+                  className="flex items-center justify-between gap-4 py-3"
+                >
+                  <p className="text-sm font-medium text-slate-500">
+                    {section.label}
+                  </p>
+                  <p className="text-base font-semibold text-slate-950">
+                    {sectionMeals.length > 0 ? `${calories} kcal` : "記録なし"}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

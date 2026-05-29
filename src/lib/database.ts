@@ -57,4 +57,37 @@ async function createMissingTables() {
     CREATE INDEX IF NOT EXISTS "schedules_date_idx"
     ON "schedules"("date");
   `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "meals" (
+      "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      "date" TEXT NOT NULL,
+      "mealType" TEXT NOT NULL,
+      "foodName" TEXT NOT NULL,
+      "calories" INTEGER NOT NULL,
+      "proteinG" REAL NOT NULL,
+      "fatG" REAL NOT NULL,
+      "carbsG" REAL NOT NULL,
+      "memo" TEXT,
+      "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" DATETIME NOT NULL
+    );
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE INDEX IF NOT EXISTS "meals_date_idx"
+    ON "meals"("date");
+  `);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "nutrition_goals" (
+      "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      "calories" INTEGER NOT NULL,
+      "proteinG" REAL NOT NULL,
+      "fatG" REAL NOT NULL,
+      "carbsG" REAL NOT NULL,
+      "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" DATETIME NOT NULL
+    );
+  `);
 }

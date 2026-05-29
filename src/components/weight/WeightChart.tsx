@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { WeightLog } from "./WeightStats";
 
 type WeightChartProps = {
@@ -21,6 +21,11 @@ type ChartPoint = {
 const chartWidth = 720;
 const chartHeight = 260;
 const padding = 32;
+const rangeOptions = [
+  { value: "14d", label: "14日", days: 14 },
+  { value: "1m", label: "1か月", days: 31 },
+  { value: "1y", label: "1年", days: 365 },
+];
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat("ja-JP", {
@@ -36,9 +41,18 @@ function buildPath(points: ChartPoint[], key: "y" | "averageY") {
 }
 
 export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
+  const [selectedRange, setSelectedRange] = useState(rangeOptions[0]);
+
   const chartData = useMemo(() => {
     const sortedLogs = [...logs].sort((a, b) => a.date.localeCompare(b.date));
-    const recentLogs = sortedLogs.slice(-30);
+    const latestDate = sortedLogs.at(-1)?.date;
+    const latestTime = latestDate ? new Date(`${latestDate}T00:00:00`).getTime() : 0;
+    const recentStartTime =
+      latestTime - (selectedRange.days - 1) * 24 * 60 * 60 * 1000;
+    const recentLogs = sortedLogs.filter((log) => {
+      const logTime = new Date(`${log.date}T00:00:00`).getTime();
+      return logTime >= recentStartTime && logTime <= latestTime;
+    });
     const weights = recentLogs.map((log) => log.weightKg);
 
     if (recentLogs.length === 0) {
@@ -83,26 +97,44 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
     });
 
     return { points, minWeight, maxWeight };
-  }, [logs]);
+  }, [logs, selectedRange.days]);
 
   const latestAverage = chartData.points.at(-1)?.averageKg ?? null;
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-2 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-b border-slate-100 pb-4 xl:flex-row xl:items-center xl:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-slate-950">体重グラフ</h3>
           <p className="mt-1 text-sm text-slate-500">
-            直近30件の体重推移と14日平均
+            表示期間を切り替えて体重推移と14日平均を確認できます
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 text-xs font-semibold">
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">
-            体重
-          </span>
-          <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700">
-            14日平均
-          </span>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="inline-flex rounded-md border border-slate-200 bg-slate-50 p-1">
+            {rangeOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setSelectedRange(option)}
+                className={`h-8 rounded px-3 text-xs font-semibold transition ${
+                  selectedRange.value === option.value
+                    ? "bg-white text-slate-950 shadow-sm"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs font-semibold">
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">
+              体重
+            </span>
+            <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700">
+              14日平均
+            </span>
+          </div>
         </div>
       </div>
 
