@@ -45,6 +45,12 @@ export function ScheduleTemplatePanel({
     return templates.find((template) => String(template.id) === selectedTemplateId);
   }, [selectedTemplateId, templates]);
 
+  useEffect(() => {
+    // Keep the default apply target aligned with the visible schedule date.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setApplyDate(selectedDate);
+  }, [selectedDate]);
+
   async function refreshTemplates() {
     const response = await fetch("/api/schedule-templates");
 
