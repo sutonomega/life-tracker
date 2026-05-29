@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Meal, MealForm } from "./MealForm";
+import { MealCopyPanel } from "./MealCopyPanel";
 import { MealItem } from "./MealItem";
 import { NutritionGoal, NutritionSummary } from "./NutritionSummary";
 
@@ -67,6 +68,7 @@ export function MealSection() {
             />
           </label>
           <MealForm selectedDate={selectedDate} onCreated={refreshMeals} />
+          <MealCopyPanel selectedDate={selectedDate} onCopied={refreshMeals} />
         </div>
 
         <div className="space-y-6">

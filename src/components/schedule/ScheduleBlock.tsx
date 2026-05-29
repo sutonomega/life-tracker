@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { CSSProperties, FormEvent, useMemo, useState } from "react";
 
 export type Schedule = {
   id: number;
@@ -26,12 +26,18 @@ type ScheduleBlockProps = {
   schedule: Schedule;
   categories: ScheduleCategory[];
   onChanged: () => void;
+  style?: CSSProperties;
 };
+
+function formatEndTime(endTime: string) {
+  return endTime === "23:59" ? "0:00" : endTime;
+}
 
 export function ScheduleBlock({
   schedule,
   categories,
   onChanged,
+  style,
 }: ScheduleBlockProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
@@ -129,15 +135,18 @@ export function ScheduleBlock({
   }
 
   return (
-    <article className="grid gap-3 border-b border-slate-100 py-4 last:border-b-0 sm:grid-cols-[88px_1fr]">
+    <article
+      style={style}
+      className="grid gap-3 sm:grid-cols-[88px_1fr]"
+    >
       <div className="text-sm font-semibold text-slate-700">
         {schedule.startTime}
         <span className="block text-xs font-medium text-slate-400">
-          {schedule.endTime}
+          {formatEndTime(schedule.endTime)}
         </span>
       </div>
 
-      <div className="relative rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="relative h-full overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
         <span
           className="absolute left-0 top-4 h-10 w-1 rounded-r"
           style={{ backgroundColor: schedule.category.color }}

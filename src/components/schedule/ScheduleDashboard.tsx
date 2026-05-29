@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { ScheduleCopyPanel } from "./ScheduleCopyPanel";
 import { ScheduleForm } from "./ScheduleForm";
+import { ScheduleTemplatePanel } from "./ScheduleTemplatePanel";
 import { TimeChart } from "./TimeChart";
 
 function getToday() {
@@ -30,6 +32,11 @@ export function ScheduleDashboard() {
           />
         </label>
         <ScheduleForm onCreated={refreshSchedules} />
+        <ScheduleCopyPanel selectedDate={selectedDate} onCopied={refreshSchedules} />
+        <ScheduleTemplatePanel
+          selectedDate={selectedDate}
+          onApplied={refreshSchedules}
+        />
       </div>
 
       <TimeChart selectedDate={selectedDate} refreshKey={refreshKey} />

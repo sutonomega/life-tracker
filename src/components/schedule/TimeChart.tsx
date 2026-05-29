@@ -8,12 +8,42 @@ type TimeChartProps = {
   refreshKey: number;
 };
 
+const minutesPerDay = 24 * 60;
+const timelineHeight = 24 * 64;
+const minimumBlockHeight = 72;
+
 function formatDateLabel(date: string) {
   return new Intl.DateTimeFormat("ja-JP", {
     month: "long",
     day: "numeric",
     weekday: "short",
   }).format(new Date(`${date}T00:00:00`));
+}
+
+function timeToMinutes(time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+function formatHourLabel(hour: number) {
+  return hour === 24 ? "0:00" : `${hour}:00`;
+}
+
+function getScheduleStyle(schedule: Schedule) {
+  const startMinutes = timeToMinutes(schedule.startTime);
+  const endMinutes = timeToMinutes(schedule.endTime);
+  const durationMinutes = Math.max(endMinutes - startMinutes, 1);
+  const top = (startMinutes / minutesPerDay) * timelineHeight;
+  const height = Math.max(
+    (durationMinutes / minutesPerDay) * timelineHeight,
+    minimumBlockHeight,
+  );
+
+  return {
+    top: `${top}px`,
+    minHeight: `${height}px`,
+    height: `${height}px`,
+  };
 }
 
 export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
@@ -101,20 +131,47 @@ export function TimeChart({ selectedDate, refreshKey }: TimeChartProps) {
       ) : null}
 
       {!isLoading && !error && sortedSchedules.length > 0 ? (
-        <div className="relative">
+        <div className="mt-5 overflow-x-auto">
           <div
-            className="absolute bottom-4 left-10 top-4 hidden w-px bg-slate-200 sm:block"
-            aria-hidden="true"
-          />
-          <div className="relative">
+            className="relative min-w-[680px]"
+            style={{ height: `${timelineHeight + 24}px` }}
+          >
+            {Array.from({ length: 25 }, (_, hour) => {
+              const top = (hour / 24) * timelineHeight;
+
+              return (
+                <div
+                  key={hour}
+                  className="absolute left-0 right-0 border-t border-slate-100"
+                  style={{ top }}
+                >
+                  <span className="absolute -top-2 left-0 w-12 bg-white pr-2 text-right text-xs font-semibold text-slate-400">
+                    {formatHourLabel(hour)}
+                  </span>
+                </div>
+              );
+            })}
+
+            <div
+              className="absolute bottom-0 left-16 top-0 w-px bg-slate-200"
+              aria-hidden="true"
+            />
+            <div className="absolute bottom-0 left-20 right-0 top-0">
             {sortedSchedules.map((schedule) => (
               <ScheduleBlock
                 key={schedule.id}
                 schedule={schedule}
                 categories={categories}
+                style={{
+                  ...getScheduleStyle(schedule),
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                }}
                 onChanged={() => setLocalRefreshKey((current) => current + 1)}
               />
             ))}
+            </div>
           </div>
         </div>
       ) : null}
