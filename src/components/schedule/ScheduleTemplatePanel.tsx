@@ -287,7 +287,7 @@ export function ScheduleTemplatePanel({
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div>
         <h3 className="text-lg font-semibold text-slate-950">
-          スケジュールテンプレート
+          テンプレート
         </h3>
         <p className="mt-1 text-sm text-slate-500">
           表示日の予定を保存し、任意の日付へ一括登録します。

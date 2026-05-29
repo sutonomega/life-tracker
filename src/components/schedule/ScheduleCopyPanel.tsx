@@ -131,7 +131,7 @@ export function ScheduleCopyPanel({
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div>
-        <h3 className="text-lg font-semibold text-slate-950">日付コピー</h3>
+        <h3 className="text-lg font-semibold text-slate-950">コピー</h3>
         <p className="mt-1 text-sm text-slate-500">
           過去日のスケジュールを表示日へまとめてコピーします。
         </p>

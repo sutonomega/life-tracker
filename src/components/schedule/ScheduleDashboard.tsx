@@ -35,8 +35,8 @@ export function ScheduleDashboard() {
         <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
           <div className="grid grid-cols-3 gap-1">
             {[
-              ["form", "スケジュール登録"],
-              ["copy", "日付コピー"],
+              ["form", "登録"],
+              ["copy", "コピー"],
               ["template", "テンプレート"],
             ].map(([value, label]) => (
               <button
