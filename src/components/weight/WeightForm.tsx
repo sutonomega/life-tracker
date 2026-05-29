@@ -111,7 +111,7 @@ export function WeightForm({ onCreated }: WeightFormProps) {
             inputMode="decimal"
             min="0.1"
             max="300"
-            step="0.1"
+            step="any"
             value={form.weightKg}
             onChange={(event) => updateField("weightKg", event.target.value)}
             className="mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"

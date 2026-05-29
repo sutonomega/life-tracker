@@ -21,6 +21,10 @@ function isPositiveNumber(value: number) {
   return Number.isFinite(value) && value > 0;
 }
 
+function isNonNegativeNumber(value: number) {
+  return Number.isFinite(value) && value >= 0;
+}
+
 async function getOrCreateGoal() {
   const goal = await prisma.nutritionGoal.findFirst({
     orderBy: { id: "asc" },
@@ -69,12 +73,12 @@ async function saveNutritionGoal(request: NextRequest) {
   if (
     !Number.isInteger(calories) ||
     !isPositiveNumber(calories) ||
-    !isPositiveNumber(proteinG) ||
-    !isPositiveNumber(fatG) ||
-    !isPositiveNumber(carbsG)
+    !isNonNegativeNumber(proteinG) ||
+    !isNonNegativeNumber(fatG) ||
+    !isNonNegativeNumber(carbsG)
   ) {
     return NextResponse.json(
-      { message: "目標値は0より大きい数値で入力してください。" },
+      { message: "カロリーは1以上、PFCは0以上の数値で入力してください。" },
       { status: 400 },
     );
   }

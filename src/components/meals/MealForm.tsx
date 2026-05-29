@@ -182,7 +182,7 @@ export function MealForm({ selectedDate, onCreated }: MealFormProps) {
             <input
               type="number"
               min="0"
-              step="0.1"
+              step="any"
               value={form.proteinG}
               onChange={(event) => updateField("proteinG", event.target.value)}
               className="mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
@@ -193,7 +193,7 @@ export function MealForm({ selectedDate, onCreated }: MealFormProps) {
             <input
               type="number"
               min="0"
-              step="0.1"
+              step="any"
               value={form.fatG}
               onChange={(event) => updateField("fatG", event.target.value)}
               className="mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
@@ -204,7 +204,7 @@ export function MealForm({ selectedDate, onCreated }: MealFormProps) {
             <input
               type="number"
               min="0"
-              step="0.1"
+              step="any"
               value={form.carbsG}
               onChange={(event) => updateField("carbsG", event.target.value)}
               className="mt-1 h-11 w-full rounded-md border border-slate-300 px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"

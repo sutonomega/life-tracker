@@ -28,10 +28,18 @@ function getTotals(meals: Meal[]) {
 }
 
 function getRate(value: number, goal: number) {
+  if (goal === 0) {
+    return value === 0 ? 0 : 140;
+  }
+
   return Math.min((value / goal) * 100, 140);
 }
 
 function getAssessment(value: number, goal: number) {
+  if (goal === 0) {
+    return value === 0 ? "適正" : "多め";
+  }
+
   const rate = (value / goal) * 100;
 
   if (rate < 80) {

@@ -169,9 +169,9 @@ export function MealItem({ meal, onChanged }: MealItemProps) {
           <div className="grid gap-3 md:col-span-2 sm:grid-cols-4">
             {[
               ["calories", "kcal", "1"],
-              ["proteinG", "P g", "0.1"],
-              ["fatG", "F g", "0.1"],
-              ["carbsG", "C g", "0.1"],
+              ["proteinG", "P g", "any"],
+              ["fatG", "F g", "any"],
+              ["carbsG", "C g", "any"],
             ].map(([field, label, step]) => (
               <label key={field} className="block">
                 <span className="text-xs font-semibold text-slate-500">{label}</span>
