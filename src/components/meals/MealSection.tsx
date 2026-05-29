@@ -74,7 +74,7 @@ export function MealSection() {
               {[
                 ["form", "食事入力"],
                 ["copy", "食事コピー"],
-                ["template", "食事テンプレート"],
+                ["template", "テンプレート"],
               ].map(([value, label]) => (
                 <button
                   key={value}

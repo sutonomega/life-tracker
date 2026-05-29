@@ -47,7 +47,7 @@ export function MealTemplatePanel({
     const response = await fetch("/api/meal-templates");
 
     if (!response.ok) {
-      throw new Error("食事テンプレートの取得に失敗しました。");
+      throw new Error("テンプレートの取得に失敗しました。");
     }
 
     const data = (await response.json()) as MealTemplate[];
@@ -66,7 +66,7 @@ export function MealTemplatePanel({
         setError(
           fetchError instanceof Error
             ? fetchError.message
-            : "食事テンプレートの取得に失敗しました。",
+            : "テンプレートの取得に失敗しました。",
         );
       } finally {
         setIsLoading(false);
@@ -106,18 +106,18 @@ export function MealTemplatePanel({
       const data = (await response.json()) as MealTemplate & { message?: string };
 
       if (!response.ok) {
-        throw new Error(data.message ?? "食事テンプレートの保存に失敗しました。");
+        throw new Error(data.message ?? "テンプレートの保存に失敗しました。");
       }
 
       setTemplateName("");
       setSelectedTemplateId(String(data.id));
-      setMessage("食事テンプレートを保存しました。");
+      setMessage("テンプレートを保存しました。");
       await refreshTemplates();
     } catch (saveError) {
       setError(
         saveError instanceof Error
           ? saveError.message
-          : "食事テンプレートの保存に失敗しました。",
+          : "テンプレートの保存に失敗しました。",
       );
     } finally {
       setIsSubmitting(false);
@@ -187,17 +187,17 @@ export function MealTemplatePanel({
       const data = (await response.json()) as { message?: string };
 
       if (!response.ok) {
-        throw new Error(data.message ?? "食事テンプレートの削除に失敗しました。");
+        throw new Error(data.message ?? "テンプレートの削除に失敗しました。");
       }
 
       setSelectedTemplateId("");
-      setMessage("食事テンプレートを削除しました。");
+      setMessage("テンプレートを削除しました。");
       await refreshTemplates();
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
           ? deleteError.message
-          : "食事テンプレートの削除に失敗しました。",
+          : "テンプレートの削除に失敗しました。",
       );
     } finally {
       setIsSubmitting(false);
@@ -207,7 +207,7 @@ export function MealTemplatePanel({
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div>
-        <h3 className="text-lg font-semibold text-slate-950">食事テンプレート</h3>
+        <h3 className="text-lg font-semibold text-slate-950">テンプレート</h3>
         <p className="mt-1 text-sm text-slate-500">
           食事記録からテンプレートを作成し、表示日へ登録します。
         </p>
