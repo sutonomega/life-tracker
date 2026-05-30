@@ -4,13 +4,6 @@ import { getLocalDateString } from "../lib/utils";
 
 export const dynamic = "force-dynamic";
 
-const mealSections = [
-  { type: "breakfast", label: "朝" },
-  { type: "lunch", label: "昼" },
-  { type: "dinner", label: "夜" },
-  { type: "snack", label: "間食" },
-];
-
 function getToday() {
   return getLocalDateString();
 }
@@ -65,40 +58,30 @@ export default async function Home() {
       detail: latestWeightLog ? latestWeightLog.date : "最新記録なし",
     },
     {
-      label: "摂取カロリー",
+      label: "食事",
       href: "/meals",
       value: meals.length > 0 ? `${totals.calories} kcal` : "-- kcal",
-      detail: goal ? `目標 ${goal.calories} kcal` : "食事記録なし",
-    },
-    {
-      label: "PFC",
-      href: "/meals",
-      value: meals.length > 0 ? formatPfc(totals.proteinG, totals.fatG, totals.carbsG) : "-- / -- / --",
-      detail: meals.length > 0 ? `${meals.length}件の食事を集計` : "集計待ち",
+      detail: meals.length > 0
+        ? `PFC ${formatPfc(totals.proteinG, totals.fatG, totals.carbsG)}`
+        : goal
+          ? `目標 ${goal.calories} kcal`
+          : "食事記録なし",
     },
   ];
 
   return (
-    <div className="space-y-8">
-      <section className="border-b border-slate-200 pb-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-emerald-700">
-              Daily dashboard
-            </p>
-            <h2 className="mt-2 text-xl font-semibold text-slate-950 sm:text-3xl">
-              今日の生活ログ
-            </h2>
-            <p className="mt-3 text-sm text-slate-600">
-              スケジュール・体重・食事をまとめて確認できます
-            </p>
-          </div>
-          <Link
-            href="/schedule"
-            className="inline-flex h-11 items-center justify-center rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
-          >
-            今日の予定を見る
-          </Link>
+    <div className="space-y-5 sm:space-y-8">
+      <section className="border-b border-slate-200 pb-5 sm:pb-6">
+        <div>
+          <p className="text-sm font-semibold text-emerald-700">
+            Daily dashboard
+          </p>
+          <h2 className="mt-2 text-xl font-semibold text-slate-950 sm:text-3xl">
+            今日の生活ログ
+          </h2>
+          <p className="mt-2 text-sm text-slate-600 sm:mt-3">
+            今日の予定・体重・食事をまとめて確認できます
+          </p>
         </div>
       </section>
 
@@ -111,12 +94,12 @@ export default async function Home() {
             <p className="mt-1 text-sm text-slate-500">{today}</p>
           </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-3">
           {dashboardItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className="group min-h-32 rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md sm:p-5"
+              className="group rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md sm:p-5"
             >
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-medium text-slate-500">
@@ -132,42 +115,6 @@ export default async function Home() {
               <p className="mt-2 text-sm text-slate-500">{item.detail}</p>
             </Link>
           ))}
-        </div>
-      </section>
-
-      <section>
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h3 className="text-lg font-semibold text-slate-950">
-              食事別サマリー
-            </h3>
-            <span className="text-sm text-slate-500">{today}</span>
-          </div>
-          <div className="mt-5 divide-y divide-slate-100">
-            {mealSections.map((section) => {
-              const sectionMeals = meals.filter(
-                (meal) => meal.mealType === section.type,
-              );
-              const calories = sectionMeals.reduce(
-                (total, meal) => total + meal.calories,
-                0,
-              );
-
-              return (
-                <div
-                  key={section.type}
-                  className="flex items-center justify-between gap-4 py-3"
-                >
-                  <p className="text-sm font-medium text-slate-500">
-                    {section.label}
-                  </p>
-                  <p className="text-base font-semibold text-slate-950">
-                    {sectionMeals.length > 0 ? `${calories} kcal` : "記録なし"}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </section>
     </div>

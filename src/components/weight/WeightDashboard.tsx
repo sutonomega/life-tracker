@@ -6,6 +6,7 @@ import { WeightForm } from "./WeightForm";
 import { WeightLog, WeightStats } from "./WeightStats";
 
 export function WeightDashboard() {
+  const [activeTab, setActiveTab] = useState<"chart" | "form" | "logs">("chart");
   const [refreshKey, setRefreshKey] = useState(0);
   const [logs, setLogs] = useState<WeightLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,16 +46,43 @@ export function WeightDashboard() {
 
   return (
     <div className="min-w-0 space-y-6">
-      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(320px,400px)_1fr]">
+      <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+        <div className="grid grid-cols-3 gap-1">
+          {[
+            ["chart", "グラフ"],
+            ["form", "入力"],
+            ["logs", "記録"],
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setActiveTab(value as typeof activeTab)}
+              className={`h-9 rounded-md px-1 text-xs font-semibold transition sm:h-10 sm:px-2 sm:text-sm ${
+                activeTab === value
+                  ? "bg-slate-950 text-white"
+                  : "text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {activeTab === "form" ? (
         <WeightForm onCreated={refreshLogs} />
+      ) : null}
+      {activeTab === "logs" ? (
         <WeightStats
           logs={logs}
           isLoading={isLoading}
           error={error}
           onChanged={refreshLogs}
         />
-      </div>
-      <WeightChart logs={logs} isLoading={isLoading} error={error} />
+      ) : null}
+      {activeTab === "chart" ? (
+        <WeightChart logs={logs} isLoading={isLoading} error={error} />
+      ) : null}
     </div>
   );
 }

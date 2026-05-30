@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { getLocalDateString } from "../../lib/utils";
 import { ScheduleCopyPanel } from "./ScheduleCopyPanel";
+import { ScheduleCardList } from "./ScheduleCardList";
 import { ScheduleForm } from "./ScheduleForm";
 import { ScheduleTemplatePanel } from "./ScheduleTemplatePanel";
-import { TimeChart } from "./TimeChart";
 
 export function ScheduleDashboard() {
   const [selectedDate, setSelectedDate] = useState(getLocalDateString);
-  const [activeTab, setActiveTab] = useState<"form" | "copy" | "template">("form");
+  const [activeTab, setActiveTab] = useState<
+    "chart" | "form" | "copy" | "template"
+  >("chart");
   const [refreshKey, setRefreshKey] = useState(0);
 
   function refreshSchedules(date: string) {
@@ -18,7 +20,7 @@ export function ScheduleDashboard() {
   }
 
   return (
-    <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(320px,420px)_1fr]">
+    <div className="min-w-0 space-y-4">
       <div className="min-w-0 space-y-4">
         <label className="block rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
           <span className="sr-only">表示日</span>
@@ -30,8 +32,9 @@ export function ScheduleDashboard() {
           />
         </label>
         <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-4 gap-1">
             {[
+              ["chart", "一覧"],
               ["form", "登録"],
               ["copy", "コピー"],
               ["template", "テンプレート"],
@@ -70,7 +73,9 @@ export function ScheduleDashboard() {
         ) : null}
       </div>
 
-      <TimeChart selectedDate={selectedDate} refreshKey={refreshKey} />
+      {activeTab === "chart" ? (
+        <ScheduleCardList selectedDate={selectedDate} refreshKey={refreshKey} />
+      ) : null}
     </div>
   );
 }

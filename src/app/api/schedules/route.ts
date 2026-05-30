@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody } from "../../../lib/request";
+import { isValidScheduleTimeRange } from "../../../lib/scheduleTime";
 
 type ScheduleRequestBody = {
   date?: string;
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (startTime >= endTime) {
+  if (!isValidScheduleTimeRange(startTime, endTime)) {
     return NextResponse.json(
       { message: "終了時刻は開始時刻より後にしてください。" },
       { status: 400 },

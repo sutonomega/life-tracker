@@ -10,7 +10,9 @@ import { NutritionGoal, NutritionSummary } from "./NutritionSummary";
 
 export function MealSection() {
   const [selectedDate, setSelectedDate] = useState(getLocalDateString);
-  const [activeTab, setActiveTab] = useState<"form" | "copy" | "template">("form");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "form" | "copy" | "template"
+  >("overview");
   const [refreshKey, setRefreshKey] = useState(0);
   const [meals, setMeals] = useState<Meal[]>([]);
   const [goal, setGoal] = useState<NutritionGoal | null>(null);
@@ -54,61 +56,62 @@ export function MealSection() {
   }
 
   return (
-    <div className="min-w-0 space-y-6">
-      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(320px,400px)_1fr]">
-        <div className="min-w-0 space-y-4">
-          <label className="block rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
-            <span className="sr-only">表示日</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(event) => setSelectedDate(event.target.value)}
-              className="date-input h-10 w-full max-w-full rounded-md border border-slate-300 px-3 text-sm leading-10 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-            />
-          </label>
-          <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
-            <div className="grid grid-cols-3 gap-1">
-              {[
-                ["form", "登録"],
-                ["copy", "コピー"],
-                ["template", "テンプレート"],
-              ].map(([value, label]) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setActiveTab(value as typeof activeTab)}
-                  className={`h-9 rounded-md px-1 text-xs font-semibold transition sm:h-10 sm:px-2 sm:text-sm ${
-                    activeTab === value
-                      ? "bg-slate-950 text-white"
-                      : "text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+    <div className="min-w-0 space-y-4">
+      <div className="min-w-0 space-y-4">
+        <label className="block rounded-lg border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+          <span className="sr-only">表示日</span>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(event) => setSelectedDate(event.target.value)}
+            className="date-input h-10 w-full max-w-full rounded-md border border-slate-300 px-3 text-sm leading-10 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          />
+        </label>
+        <div className="rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
+          <div className="grid grid-cols-4 gap-1">
+            {[
+              ["overview", "サマリー"],
+              ["form", "登録"],
+              ["copy", "コピー"],
+              ["template", "テンプレート"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setActiveTab(value as typeof activeTab)}
+                className={`h-9 rounded-md px-1 text-xs font-semibold transition sm:h-10 sm:px-2 sm:text-sm ${
+                  activeTab === value
+                    ? "bg-slate-950 text-white"
+                    : "text-slate-600 hover:bg-slate-50"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
-
-          {activeTab === "form" ? (
-            <MealForm selectedDate={selectedDate} onCreated={refreshMeals} />
-          ) : null}
-          {activeTab === "copy" ? (
-            <MealCopyPanel
-              selectedDate={selectedDate}
-              targetMealCount={meals.length}
-              onCopied={refreshMeals}
-            />
-          ) : null}
-          {activeTab === "template" ? (
-            <MealTemplatePanel
-              selectedDate={selectedDate}
-              meals={meals}
-              onCreated={refreshMeals}
-            />
-          ) : null}
         </div>
 
-        <div className="min-w-0 space-y-6">
+        {activeTab === "form" ? (
+          <MealForm selectedDate={selectedDate} onCreated={refreshMeals} />
+        ) : null}
+        {activeTab === "copy" ? (
+          <MealCopyPanel
+            selectedDate={selectedDate}
+            targetMealCount={meals.length}
+            onCopied={refreshMeals}
+          />
+        ) : null}
+        {activeTab === "template" ? (
+          <MealTemplatePanel
+            selectedDate={selectedDate}
+            meals={meals}
+            onCreated={refreshMeals}
+          />
+        ) : null}
+      </div>
+
+      {activeTab === "overview" ? (
+        <div className="min-w-0 space-y-4">
           <NutritionSummary meals={meals} goal={goal} />
           <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex flex-col gap-2 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
@@ -146,7 +149,7 @@ export function MealSection() {
             ) : null}
           </section>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

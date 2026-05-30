@@ -1,6 +1,7 @@
 "use client";
 
 import { CSSProperties, FormEvent, useMemo, useState } from "react";
+import { isValidScheduleTimeRange } from "../../lib/scheduleTime";
 
 export type Schedule = {
   id: number;
@@ -52,9 +53,11 @@ export function ScheduleBlock({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isTimeRangeInvalid = useMemo(() => {
-    return Boolean(
-      form.startTime && form.endTime && form.startTime >= form.endTime,
-    );
+    if (!form.startTime || !form.endTime) {
+      return false;
+    }
+
+    return !isValidScheduleTimeRange(form.startTime, form.endTime);
   }, [form.endTime, form.startTime]);
 
   function updateField(field: keyof typeof form, value: string) {
@@ -135,18 +138,11 @@ export function ScheduleBlock({
   }
 
   return (
-    <article
-      style={style}
-      className="grid gap-3 sm:grid-cols-[88px_1fr]"
-    >
-      <div className="text-sm font-semibold text-slate-700">
-        {schedule.startTime}
-        <span className="block text-xs font-medium text-slate-400">
-          {formatEndTime(schedule.endTime)}
-        </span>
-      </div>
-
-      <div className="relative h-full overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <article className="grid gap-3">
+      <div
+        style={style}
+        className="relative rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
+      >
         <span
           className="absolute left-0 top-4 h-10 w-1 rounded-r"
           style={{ backgroundColor: schedule.category.color }}
@@ -154,11 +150,25 @@ export function ScheduleBlock({
         />
 
         {!isEditing ? (
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <h4 className="text-base font-semibold text-slate-950">
-                {schedule.title}
-              </h4>
+          <div className="grid h-full grid-cols-[minmax(0,1fr)_auto] gap-3">
+            <div className="min-w-0 self-start">
+              <p className="mb-2 text-sm font-semibold text-slate-700">
+                {schedule.startTime} - {formatEndTime(schedule.endTime)}
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <h4 className="text-base font-semibold text-slate-950">
+                  {schedule.title}
+                </h4>
+                <span
+                  className="inline-flex w-fit items-center rounded-full px-2.5 py-1 text-xs font-semibold"
+                  style={{
+                    backgroundColor: `${schedule.category.color}20`,
+                    color: schedule.category.color,
+                  }}
+                >
+                  {schedule.category.name}
+                </span>
+              </div>
               {schedule.memo ? (
                 <p className="mt-2 text-sm text-slate-500">{schedule.memo}</p>
               ) : null}
@@ -171,20 +181,11 @@ export function ScheduleBlock({
                 <p className="mt-2 text-sm font-medium text-rose-700">{error}</p>
               ) : null}
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span
-                className="inline-flex w-fit items-center rounded-full px-2.5 py-1 text-xs font-semibold"
-                style={{
-                  backgroundColor: `${schedule.category.color}20`,
-                  color: schedule.category.color,
-                }}
-              >
-                {schedule.category.name}
-              </span>
+            <div className="flex shrink-0 flex-col gap-2 self-start">
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="h-8 w-full rounded-md border border-slate-200 px-3 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
+                className="h-7 rounded-md border border-slate-200 px-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
               >
                 編集
               </button>
@@ -192,7 +193,7 @@ export function ScheduleBlock({
                 type="button"
                 onClick={handleDelete}
                 disabled={isSubmitting}
-                className="h-8 w-full rounded-md border border-rose-200 px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                className="h-7 rounded-md border border-rose-200 px-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 削除
               </button>
@@ -258,7 +259,7 @@ export function ScheduleBlock({
 
             {isTimeRangeInvalid ? (
               <p className="text-sm font-medium text-rose-700">
-                終了時刻は開始時刻より後にしてください。
+                終了時刻は開始時刻より後にしてください。0:00 終了は24:00として扱います。
               </p>
             ) : null}
             {error ? <p className="text-sm font-medium text-rose-700">{error}</p> : null}

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { isValidScheduleTimeRange } from "../../lib/scheduleTime";
 import { getLocalDateString } from "../../lib/utils";
 
 type ScheduleCategory = {
@@ -70,9 +71,11 @@ export function ScheduleForm({ selectedDate, onCreated }: ScheduleFormProps) {
   }, []);
 
   const isTimeRangeInvalid = useMemo(() => {
-    return Boolean(
-      form.startTime && form.endTime && form.startTime >= form.endTime,
-    );
+    if (!form.startTime || !form.endTime) {
+      return false;
+    }
+
+    return !isValidScheduleTimeRange(form.startTime, form.endTime);
   }, [form.endTime, form.startTime]);
 
   function updateField(field: keyof FormState, value: string) {
@@ -223,7 +226,7 @@ export function ScheduleForm({ selectedDate, onCreated }: ScheduleFormProps) {
 
       {isTimeRangeInvalid ? (
         <p className="mt-4 text-sm font-medium text-rose-700">
-          終了時刻は開始時刻より後にしてください。
+          終了時刻は開始時刻より後にしてください。0:00 終了は24:00として扱います。
         </p>
       ) : null}
 
