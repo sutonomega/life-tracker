@@ -13,14 +13,20 @@ type ChartPoint = {
   date: string;
   weightKg: number;
   averageKg: number;
+  index: number;
   x: number;
   y: number;
   averageY: number;
 };
 
-const chartWidth = 720;
-const chartHeight = 260;
-const padding = 32;
+const chartWidth = 520;
+const chartHeight = 280;
+const padding = {
+  top: 34,
+  right: 34,
+  bottom: 40,
+  left: 48,
+};
 const rangeOptions = [
   { value: "14d", label: "14日", days: 14 },
   { value: "1m", label: "1か月", days: 31 },
@@ -44,6 +50,18 @@ function isNextDay(current: string, next: string) {
   const currentTime = new Date(`${current}T00:00:00`).getTime();
   const nextTime = new Date(`${next}T00:00:00`).getTime();
   return nextTime - currentTime === 24 * 60 * 60 * 1000;
+}
+
+function getLabelIndexes(pointCount: number) {
+  if (pointCount <= 6) {
+    return new Set(Array.from({ length: pointCount }, (_, index) => index));
+  }
+
+  return new Set([
+    0,
+    Math.floor((pointCount - 1) / 2),
+    pointCount - 1,
+  ]);
 }
 
 export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
@@ -78,24 +96,25 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
     const minWeight = Math.floor(Math.min(...weights, ...averageValues) - 1);
     const maxWeight = Math.ceil(Math.max(...weights, ...averageValues) + 1);
     const range = Math.max(maxWeight - minWeight, 1);
-    const plotWidth = chartWidth - padding * 2;
-    const plotHeight = chartHeight - padding * 2;
+    const plotWidth = chartWidth - padding.left - padding.right;
+    const plotHeight = chartHeight - padding.top - padding.bottom;
 
     const points = recentLogs.map((log, index) => {
       const x =
         recentLogs.length === 1
           ? chartWidth / 2
-          : padding + (plotWidth * index) / (recentLogs.length - 1);
+          : padding.left + (plotWidth * index) / (recentLogs.length - 1);
       const y =
-        padding + plotHeight - ((log.weightKg - minWeight) / range) * plotHeight;
+        padding.top + plotHeight - ((log.weightKg - minWeight) / range) * plotHeight;
       const averageKg = averageValues[index];
       const averageY =
-        padding + plotHeight - ((averageKg - minWeight) / range) * plotHeight;
+        padding.top + plotHeight - ((averageKg - minWeight) / range) * plotHeight;
 
       return {
         date: log.date,
         weightKg: log.weightKg,
         averageKg,
+        index,
         x,
         y,
         averageY,
@@ -106,6 +125,7 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
   }, [logs, selectedRange.days]);
 
   const latestAverage = chartData.points.at(-1)?.averageKg ?? null;
+  const labelIndexes = getLabelIndexes(chartData.points.length);
 
   return (
     <section className="min-w-0 rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
@@ -186,32 +206,32 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
             </div>
           </div>
 
-          <div className="max-w-full overflow-x-auto">
+          <div className="max-w-full">
             <svg
               viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-              className="h-72 min-w-[640px] rounded-lg border border-slate-100 bg-slate-50"
+              className="h-64 w-full rounded-lg border border-slate-100 bg-slate-50 sm:h-72"
               role="img"
               aria-label="体重推移グラフ"
             >
               <line
-                x1={padding}
-                y1={padding}
-                x2={padding}
-                y2={chartHeight - padding}
+                x1={padding.left}
+                y1={padding.top}
+                x2={padding.left}
+                y2={chartHeight - padding.bottom}
                 stroke="#cbd5e1"
               />
               <line
-                x1={padding}
-                y1={chartHeight - padding}
-                x2={chartWidth - padding}
-                y2={chartHeight - padding}
+                x1={padding.left}
+                y1={chartHeight - padding.bottom}
+                x2={chartWidth - padding.right}
+                y2={chartHeight - padding.bottom}
                 stroke="#cbd5e1"
               />
 
               {[chartData.minWeight, chartData.maxWeight].map((weight) => {
                 const y =
-                  padding +
-                  (chartHeight - padding * 2) *
+                  padding.top +
+                  (chartHeight - padding.top - padding.bottom) *
                     (1 -
                       (weight - chartData.minWeight) /
                         Math.max(chartData.maxWeight - chartData.minWeight, 1));
@@ -219,9 +239,9 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
                 return (
                   <g key={weight}>
                     <line
-                      x1={padding}
+                      x1={padding.left}
                       y1={y}
-                      x2={chartWidth - padding}
+                      x2={chartWidth - padding.right}
                       y2={y}
                       stroke="#e2e8f0"
                     />
@@ -267,14 +287,16 @@ export function WeightChart({ logs, isLoading, error }: WeightChartProps) {
               {chartData.points.map((point) => (
                 <g key={`${point.date}-${point.weightKg}`}>
                   <circle cx={point.x} cy={point.y} r="4" fill="#0f172a" />
-                  <text
-                    x={point.x}
-                    y={chartHeight - 10}
-                    textAnchor="middle"
-                    className="fill-slate-500 text-xs"
-                  >
-                    {formatDate(point.date)}
-                  </text>
+                  {labelIndexes.has(point.index) ? (
+                    <text
+                      x={point.x}
+                      y={chartHeight - 10}
+                      textAnchor="middle"
+                      className="fill-slate-500 text-[10px]"
+                    >
+                      {formatDate(point.date)}
+                    </text>
+                  ) : null}
                 </g>
               ))}
             </svg>
