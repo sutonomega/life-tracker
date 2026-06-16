@@ -4,7 +4,6 @@ import { parseJsonBody } from "../../../lib/request";
 
 type MealTemplateRequestBody = {
   name?: string;
-  mealType?: string;
   foodName?: string;
   calories?: number;
   proteinG?: number;
@@ -12,8 +11,6 @@ type MealTemplateRequestBody = {
   carbsG?: number;
   memo?: string;
 };
-
-const mealTypes = new Set(["breakfast", "lunch", "dinner", "snack"]);
 
 function isValidNonNegativeNumber(value: number) {
   return Number.isFinite(value) && value >= 0;
@@ -40,7 +37,6 @@ export async function POST(request: NextRequest) {
   }
 
   const name = body.name?.trim() ?? "";
-  const mealType = body.mealType?.trim() ?? "";
   const foodName = body.foodName?.trim() ?? "";
   const calories = Number(body.calories);
   const proteinG = Number(body.proteinG);
@@ -48,16 +44,9 @@ export async function POST(request: NextRequest) {
   const carbsG = Number(body.carbsG);
   const memo = body.memo?.trim() || null;
 
-  if (!name || !mealType || !foodName) {
+  if (!name || !foodName) {
     return NextResponse.json(
-      { message: "テンプレート名、食事区分、食品名を入力してください。" },
-      { status: 400 },
-    );
-  }
-
-  if (!mealTypes.has(mealType)) {
-    return NextResponse.json(
-      { message: "食事区分が正しくありません。" },
+      { message: "テンプレート名、食品名を入力してください。" },
       { status: 400 },
     );
   }
@@ -78,7 +67,6 @@ export async function POST(request: NextRequest) {
   const template = await prisma.mealTemplate.create({
     data: {
       name,
-      mealType,
       foodName,
       calories,
       proteinG,
