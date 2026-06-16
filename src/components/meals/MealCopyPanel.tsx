@@ -5,15 +5,10 @@ import { getMealTypeLabel, Meal, mealTypeOptions } from "./MealForm";
 
 type MealCopyPanelProps = {
   selectedDate: string;
-  targetMealCount: number;
   onCopied: () => void;
 };
 
-export function MealCopyPanel({
-  selectedDate,
-  targetMealCount: _targetMealCount,
-  onCopied,
-}: MealCopyPanelProps) {
+export function MealCopyPanel({ selectedDate, onCopied }: MealCopyPanelProps) {
   const [sourceDate, setSourceDate] = useState(selectedDate);
   const [targetMealType, setTargetMealType] = useState("breakfast");
   const [previewMeals, setPreviewMeals] = useState<Meal[]>([]);
