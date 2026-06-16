@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { getMealTypeLabel, Meal } from "./MealForm";
+import { getMealTypeLabel, Meal, mealTypeOptions } from "./MealForm";
 
 type MealTemplatePanelProps = {
   selectedDate: string;
@@ -12,7 +12,6 @@ type MealTemplatePanelProps = {
 type MealTemplate = {
   id: number;
   name: string;
-  mealType: string;
   foodName: string;
   calories: number;
   proteinG: number;
@@ -29,6 +28,7 @@ export function MealTemplatePanel({
   const [templates, setTemplates] = useState<MealTemplate[]>([]);
   const [selectedMealId, setSelectedMealId] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
+  const [selectedMealType, setSelectedMealType] = useState("breakfast");
   const [templateName, setTemplateName] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -94,7 +94,6 @@ export function MealTemplatePanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          mealType: selectedMeal.mealType,
           foodName: selectedMeal.foodName,
           calories: selectedMeal.calories,
           proteinG: selectedMeal.proteinG,
@@ -141,7 +140,7 @@ export function MealTemplatePanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           date: selectedDate,
-          mealType: selectedTemplate.mealType,
+          mealType: selectedMealType,
           foodName: selectedTemplate.foodName,
           calories: selectedTemplate.calories,
           proteinG: selectedTemplate.proteinG,
@@ -181,7 +180,7 @@ export function MealTemplatePanel({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/meal-templates/${selectedTemplate.id}`, {
+      const response = await fetch("/api/meal-templates/" + selectedTemplate.id, {
         method: "DELETE",
       });
       const data = (await response.json()) as { message?: string };
@@ -272,12 +271,24 @@ export function MealTemplatePanel({
             </select>
           </label>
 
+          <label className="mt-3 block">
+            <span className="text-sm font-medium text-slate-700">登録先の食事区分</span>
+            <select
+              value={selectedMealType}
+              onChange={(event) => setSelectedMealType(event.target.value)}
+              className="mt-1 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+            >
+              {mealTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
           {selectedTemplate ? (
             <div className="mt-3 rounded-md bg-white p-3 text-sm text-slate-700">
-              <p className="font-semibold text-slate-950">
-                {getMealTypeLabel(selectedTemplate.mealType)} /{" "}
-                {selectedTemplate.foodName}
-              </p>
+              <p className="font-semibold text-slate-950">{selectedTemplate.foodName}</p>
               <p className="mt-1 text-xs text-slate-500">
                 {selectedTemplate.calories}kcal / P {selectedTemplate.proteinG}g /
                 F {selectedTemplate.fatG}g / C {selectedTemplate.carbsG}g
