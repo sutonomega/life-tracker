@@ -95,11 +95,7 @@ export function MealSection() {
           <MealForm selectedDate={selectedDate} onCreated={refreshMeals} />
         ) : null}
         {activeTab === "copy" ? (
-          <MealCopyPanel
-            selectedDate={selectedDate}
-            targetMealCount={meals.length}
-            onCopied={refreshMeals}
-          />
+          <MealCopyPanel selectedDate={selectedDate} onCopied={refreshMeals} />
         ) : null}
         {activeTab === "template" ? (
           <MealTemplatePanel
