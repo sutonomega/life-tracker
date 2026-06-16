@@ -41,7 +41,6 @@ model Meal {
 model MealTemplate {
   id        Int    @id @default(autoincrement())
   name      String
-  mealType  String
   foodName  String
   calories  Int
   proteinG  Float
