@@ -64,7 +64,7 @@ export function MealTemplatePanel({
     return templates.find((template) => String(template.id) === selectedTemplateId);
   }, [selectedTemplateId, templates]);
 
-  async function refreshTemplates() {
+  async function refreshTemplates(preferredTemplateId?: number) {
     const response = await fetch("/api/meal-templates");
 
     if (!response.ok) {
@@ -73,7 +73,19 @@ export function MealTemplatePanel({
 
     const data = (await response.json()) as MealTemplate[];
     setTemplates(data);
-    setSelectedTemplateId((current) => current || String(data[0]?.id ?? ""));
+    setSelectedTemplateId((current) => {
+      const preferred = String(preferredTemplateId ?? "");
+
+      if (preferred && data.some((template) => String(template.id) === preferred)) {
+        return preferred;
+      }
+
+      if (current && data.some((template) => String(template.id) === current)) {
+        return current;
+      }
+
+      return String(data[0]?.id ?? "");
+    });
   }
 
   useEffect(() => {
@@ -115,6 +127,7 @@ export function MealTemplatePanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
+          mealType: selectedMeal.mealType,
           foodName: selectedMeal.foodName,
           calories: selectedMeal.calories,
           proteinG: selectedMeal.proteinG,
@@ -140,7 +153,7 @@ export function MealTemplatePanel({
       setTemplateName("");
       setSelectedTemplateId(String(data.id));
       setMessage("テンプレートを保存しました。");
-      await refreshTemplates();
+      await refreshTemplates(data.id);
     } catch (saveError) {
       setError(
         saveError instanceof Error
