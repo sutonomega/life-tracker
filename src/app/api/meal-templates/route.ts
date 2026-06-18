@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody } from "../../../lib/request";
 
@@ -14,6 +15,17 @@ type MealTemplateRequestBody = {
 
 function isValidNonNegativeNumber(value: number) {
   return Number.isFinite(value) && value >= 0;
+}
+
+function isMealTypeSchemaMismatch(error: unknown) {
+  if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
+    return false;
+  }
+
+  return (
+    (error.code === "P2011" || error.code === "P2022") &&
+    String(error.message).includes("mealType")
+  );
 }
 
 export async function GET() {
@@ -64,17 +76,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const template = await prisma.mealTemplate.create({
-    data: {
-      name,
-      foodName,
-      calories,
-      proteinG,
-      fatG,
-      carbsG,
-      memo,
-    },
-  });
+  try {
+    const template = await prisma.mealTemplate.create({
+      data: {
+        name,
+        foodName,
+        calories,
+        proteinG,
+        fatG,
+        carbsG,
+        memo,
+      },
+    });
 
-  return NextResponse.json(template, { status: 201 });
+    return NextResponse.json(template, { status: 201 });
+  } catch (error) {
+    if (isMealTypeSchemaMismatch(error)) {
+      return NextResponse.json(
+        {
+          message:
+            "本番DBの食事テンプレートスキーマが古い可能性があります。Prisma migrationを適用してください。",
+        },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json(
+      { message: "テンプレートの保存に失敗しました。" },
+      { status: 500 },
+    );
+  }
 }
