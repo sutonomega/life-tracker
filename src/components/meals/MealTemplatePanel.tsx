@@ -114,7 +114,7 @@ export function MealTemplatePanel({
     setError("");
 
     if (!selectedMeal) {
-      setError("テンプレート化する食事記録を選択してください。"),
+      setError("テンプレート化する食事記録を選択してください。");
       return;
     }
 
