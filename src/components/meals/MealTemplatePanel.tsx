@@ -20,6 +20,27 @@ type MealTemplate = {
   memo: string | null;
 };
 
+async function readJsonResponse<T>(response: Response): Promise<T | null> {
+  const text = await response.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return null;
+  }
+}
+
+function getResponseMessage(
+  data: { message?: string } | null,
+  fallback: string,
+) {
+  return data?.message ?? fallback;
+}
+
 export function MealTemplatePanel({
   selectedDate,
   meals,
@@ -102,10 +123,18 @@ export function MealTemplatePanel({
           memo: selectedMeal.memo,
         }),
       });
-      const data = (await response.json()) as MealTemplate & { message?: string };
+      const data = await readJsonResponse<MealTemplate & { message?: string }>(
+        response,
+      );
 
       if (!response.ok) {
-        throw new Error(data.message ?? "テンプレートの保存に失敗しました。");
+        throw new Error(
+          getResponseMessage(data, "テンプレートの保存に失敗しました。"),
+        );
+      }
+
+      if (!data) {
+        throw new Error("テンプレートの保存結果を取得できませんでした。");
       }
 
       setTemplateName("");
@@ -149,10 +178,12 @@ export function MealTemplatePanel({
           memo: selectedTemplate.memo,
         }),
       });
-      const data = (await response.json()) as { message?: string };
+      const data = await readJsonResponse<{ message?: string }>(response);
 
       if (!response.ok) {
-        throw new Error(data.message ?? "テンプレートからの食事登録に失敗しました。");
+        throw new Error(
+          getResponseMessage(data, "テンプレートからの食事登録に失敗しました。"),
+        );
       }
 
       setMessage("テンプレートから食事を登録しました。");
@@ -183,10 +214,12 @@ export function MealTemplatePanel({
       const response = await fetch("/api/meal-templates/" + selectedTemplate.id, {
         method: "DELETE",
       });
-      const data = (await response.json()) as { message?: string };
+      const data = await readJsonResponse<{ message?: string }>(response);
 
       if (!response.ok) {
-        throw new Error(data.message ?? "テンプレートの削除に失敗しました。");
+        throw new Error(
+          getResponseMessage(data, "テンプレートの削除に失敗しました。"),
+        );
       }
 
       setSelectedTemplateId("");
