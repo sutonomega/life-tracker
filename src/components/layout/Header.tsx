@@ -1,3 +1,5 @@
+import { appVersion } from "../../lib/appVersion";
+
 type HeaderProps = {
   onMenuOpen: () => void;
 };
@@ -14,8 +16,13 @@ export function Header({ onMenuOpen }: HeaderProps) {
             生活ログ管理
           </h1>
         </div>
-        <div className="hidden rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-600 lg:block">
-          今日の記録を整える
+        <div className="hidden items-center gap-2 lg:flex">
+          <div className="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-600">
+            今日の記録を整える
+          </div>
+          <div className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-500">
+            v{appVersion}
+          </div>
         </div>
         <button
           type="button"
