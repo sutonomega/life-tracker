@@ -114,7 +114,7 @@ export function MealTemplatePanel({
     setError("");
 
     if (!selectedMeal) {
-      setError("テンプレート化する食事記録を選択してください。");
+      setError("テンプレート化する食事記録を選択してください。"),
       return;
     }
 
@@ -199,7 +199,7 @@ export function MealTemplatePanel({
         );
       }
 
-      setMessage("テンプレートから食事を登録しました。"),
+      setMessage("テンプレートから食事を登録しました。");
       onCreated();
     } catch (createError) {
       setError(
@@ -236,7 +236,7 @@ export function MealTemplatePanel({
       }
 
       setSelectedTemplateId("");
-      setMessage("テンプレートを削除しました。"),
+      setMessage("テンプレートを削除しました。");
       await refreshTemplates();
     } catch (deleteError) {
       setError(
