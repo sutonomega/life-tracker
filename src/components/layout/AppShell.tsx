@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { appVersion } from "../../lib/appVersion";
 import { Header } from "./Header";
 import { SideNav } from "./SideNav";
 
@@ -41,6 +42,9 @@ export function AppShell({ children }: AppShellProps) {
                 </p>
                 <p className="mt-1 text-xs text-slate-400">
                   schedule / body / meals
+                </p>
+                <p className="mt-1 text-xs font-semibold text-slate-500">
+                  v{appVersion}
                 </p>
               </div>
               <button

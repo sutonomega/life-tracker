@@ -5,6 +5,7 @@ import { parseJsonBody } from "../../../lib/request";
 
 type MealTemplateRequestBody = {
   name?: string;
+  mealType?: string;
   foodName?: string;
   calories?: number;
   proteinG?: number;
@@ -22,10 +23,52 @@ function isMealTypeSchemaMismatch(error: unknown) {
     return false;
   }
 
-  return (
-    (error.code === "P2011" || error.code === "P2022") &&
-    String(error.message).includes("mealType")
+  return error.code === "P2011" || (
+    error.code === "P2022" && String(error.message).includes("mealType")
   );
+}
+
+async function createMealTemplateWithLegacyMealType({
+  name,
+  mealType,
+  foodName,
+  calories,
+  proteinG,
+  fatG,
+  carbsG,
+  memo,
+}: {
+  name: string;
+  mealType: string;
+  foodName: string;
+  calories: number;
+  proteinG: number;
+  fatG: number;
+  carbsG: number;
+  memo: string | null;
+}) {
+  const templates = await prisma.$queryRaw<
+    {
+      id: number;
+      name: string;
+      foodName: string;
+      calories: number;
+      proteinG: number;
+      fatG: number;
+      carbsG: number;
+      memo: string | null;
+      createdAt: Date;
+      updatedAt: Date;
+    }[]
+  >`
+    INSERT INTO "meal_templates"
+      ("name", "mealType", "foodName", "calories", "proteinG", "fatG", "carbsG", "memo", "createdAt", "updatedAt")
+    VALUES
+      (${name}, ${mealType}, ${foodName}, ${calories}, ${proteinG}, ${fatG}, ${carbsG}, ${memo}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    RETURNING "id", "name", "foodName", "calories", "proteinG", "fatG", "carbsG", "memo", "createdAt", "updatedAt"
+  `;
+
+  return templates[0] ?? null;
 }
 
 export async function GET() {
@@ -49,6 +92,7 @@ export async function POST(request: NextRequest) {
   }
 
   const name = body.name?.trim() ?? "";
+  const mealType = body.mealType?.trim() || "snack";
   const foodName = body.foodName?.trim() ?? "";
   const calories = Number(body.calories);
   const proteinG = Number(body.proteinG);
@@ -92,13 +136,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(template, { status: 201 });
   } catch (error) {
     if (isMealTypeSchemaMismatch(error)) {
-      return NextResponse.json(
-        {
-          message:
-            "本番DBの食事テンプレートスキーマが古い可能性があります。Prisma migrationを適用してください。",
-        },
-        { status: 500 },
-      );
+      const template = await createMealTemplateWithLegacyMealType({
+        name,
+        mealType,
+        foodName,
+        calories,
+        proteinG,
+        fatG,
+        carbsG,
+        memo,
+      });
+
+      if (template) {
+        return NextResponse.json(template, { status: 201 });
+      }
     }
 
     return NextResponse.json(
