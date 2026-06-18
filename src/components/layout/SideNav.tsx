@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { appVersion } from "../../lib/appVersion";
 
 const navItems = [
   { href: "/", label: "ホーム", icon: "⌂" },
@@ -38,6 +39,9 @@ export function SideNav({ onNavigate }: SideNavProps) {
             </Link>
           ))}
         </nav>
+        <div className="mt-auto px-6 py-5 text-xs font-semibold text-slate-500">
+          v{appVersion}
+        </div>
       </div>
     </aside>
   );
